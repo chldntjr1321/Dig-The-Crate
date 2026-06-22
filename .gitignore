@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# 목업 이미지
+docs/assets
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
