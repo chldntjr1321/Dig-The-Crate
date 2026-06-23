@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+package-lock.json
+yarn.lock
 
 # 목업 이미지
 docs/assets
