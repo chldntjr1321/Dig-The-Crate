@@ -60,6 +60,7 @@ src/
 │   ├── ui/
 │   │   ├── Button.tsx
 │   │   ├── Input.tsx
+│   │   ├── LoadingSpinner.tsx
 │   │   └── PasswordToggle.tsx
 │   ├── Header.tsx
 │   ├── ProtectedRoute.tsx
