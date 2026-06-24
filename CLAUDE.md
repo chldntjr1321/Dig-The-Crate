@@ -138,6 +138,7 @@ any 타입 사용 금지
 console.log 커밋에 포함 금지
 하드코딩된 색상값 사용 금지 → DESIGN_GUIDE.md 참조
 컴포넌트에서 직접 Supabase / fetch 호출 금지
+인증 외의 Supabase 호출을 훅에서 직접 작성 금지 (services/ 경유)
 ```
 
 ---
@@ -149,12 +150,13 @@ console.log 커밋에 포함 금지
 ```
 컴포넌트
   → 훅 호출
-    → 서비스 함수 호출
+    → 서비스 함수 호출      ← DB 쿼리 / 외부 API
       → Supabase / 외부 API
 ```
 
-- API 호출 로직은 반드시 `services/` 폴더의 함수를 통해서만 한다.
-- 훅에서 직접 supabase 쿼리 작성 금지.
+- DB 쿼리와 외부 API 호출은 반드시 `services/` 폴더의 함수를 통해서만 한다.
+- 훅에서 직접 Supabase DB 쿼리 작성 금지.
+- **인증(Auth)은 예외**: `useAuth.ts`에서 `supabase.auth`를 직접 호출한다. `services/auth.ts`는 만들지 않는다.
 
 ### 상태 관리
 
