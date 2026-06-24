@@ -73,8 +73,7 @@ src/
 │       ├── SearchResultList.tsx
 │       └── SearchResultCard.tsx
 ├── pages/
-│   ├── LoginPage.tsx
-│   ├── SignupPage.tsx
+│   ├── AuthPage.tsx
 │   ├── MainPage.tsx
 │   └── SearchPage.tsx
 ├── types/
@@ -127,7 +126,7 @@ interface Collection {
 ### 파일 네이밍
 
 ```
-컴포넌트 / 페이지   PascalCase   AlbumCard.tsx, LoginPage.tsx
+컴포넌트 / 페이지   PascalCase   AlbumCard.tsx, AuthPage.tsx
 훅                 camelCase    useAuth.ts, useCollections.ts
 서비스 / 유틸       camelCase    collections.ts, discogs.ts, cn.ts
 ```
