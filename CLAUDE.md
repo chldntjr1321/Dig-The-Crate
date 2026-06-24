@@ -62,6 +62,7 @@ src/
 │   │   ├── Input.tsx
 │   │   └── PasswordToggle.tsx
 │   ├── Header.tsx
+│   ├── ProtectedRoute.tsx
 │   ├── auth/
 │   │   ├── LoginForm.tsx
 │   │   └── SignupForm.tsx
@@ -123,6 +124,23 @@ interface Collection {
 }
 ```
 
+### React 타입 import
+
+React 네임스페이스 타입(`React.FormEvent`, `React.MouseEvent`, `React.ReactNode` 등) 사용 금지.
+반드시 `import type`으로 named import한다.
+
+```typescript
+// 금지
+import React from 'react'
+const handleSubmit = (e: React.FormEvent) => {}
+
+// 허용
+import { type SubmitEvent } from 'react'
+const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {}
+```
+
+> `FormEvent`는 React 19에서 deprecated. 폼 제출 이벤트는 React의 `SubmitEvent<HTMLFormElement>` 사용.
+
 ### 파일 네이밍
 
 ```
@@ -157,6 +175,23 @@ console.log 커밋에 포함 금지
 - DB 쿼리와 외부 API 호출은 반드시 `services/` 폴더의 함수를 통해서만 한다.
 - 훅에서 직접 Supabase DB 쿼리 작성 금지.
 - **인증(Auth)은 예외**: `useAuth.ts`에서 `supabase.auth`를 직접 호출한다. `services/auth.ts`는 만들지 않는다.
+
+### ProtectedRoute
+
+`ProtectedRoute` 컴포넌트는 `components/ProtectedRoute.tsx`로 분리한다.
+`router.tsx`에 컴포넌트와 객체를 같이 두면 Vite Fast Refresh 경고가 발생하기 때문이다.
+
+```tsx
+const ProtectedRoute = () => {
+  const { user, loading } = useAuth()
+
+  if (loading) return <LoadingSpinner />      // 세션 확인 중
+  if (!user) return <Navigate to="/login" />  // 비로그인 시 로그인 페이지로
+  return <Outlet />                           // 로그인 시 자식 라우트 렌더링
+}
+```
+
+`useNavigate`로 직접 이동하지 않는다. `user`가 `null`이 되면 `ProtectedRoute`가 자동으로 로그인 페이지로 보낸다.
 
 ### 상태 관리
 

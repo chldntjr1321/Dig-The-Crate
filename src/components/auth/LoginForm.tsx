@@ -1,14 +1,36 @@
-import { useState } from 'react'
-import { Link } from 'react-router'
+import { useState, type SubmitEvent } from 'react'
+import { Link, useNavigate } from 'react-router'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import PasswordToggle from '@/components/ui/PasswordToggle'
+import useAuth from '@/hooks/useAuth'
 
 const LoginForm = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const { signIn } = useAuth()
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      await signIn(email, password)
+      navigate('/')
+    } catch {
+      setError('이메일 또는 비밀번호가 올바르지 않습니다.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className="w-full max-w-md">
+    <form onSubmit={handleSubmit} className="w-full max-w-md">
       <div className="bg-form border border-border rounded-lg px-8 py-8 flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           <Input
@@ -17,6 +39,8 @@ const LoginForm = () => {
             type="email"
             placeholder="이메일을 입력하세요"
             autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <div className="flex flex-col gap-1.5">
@@ -27,15 +51,20 @@ const LoginForm = () => {
               >
                 PASSWORD
               </label>
-              <span className="text-xs font-medium text-muted tracking-widest uppercase cursor-pointer hover:text-secondary transition-colors">
+              <button
+                type="button"
+                className="text-xs font-medium text-muted tracking-widest uppercase cursor-pointer hover:text-secondary transition-colors"
+              >
                 FORGOT?
-              </span>
+              </button>
             </div>
             <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="비밀번호를 입력하세요"
               autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               rightElement={
                 <PasswordToggle
                   show={showPassword}
@@ -44,9 +73,13 @@ const LoginForm = () => {
               }
             />
           </div>
+
+          {error && <p className="text-xs text-red-400">{error}</p>}
         </div>
 
-        <Button type="submit">로그인</Button>
+        <Button type="submit" disabled={loading || !email || !password}>
+          {loading ? '로그인 중...' : '로그인'}
+        </Button>
 
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-border" />
