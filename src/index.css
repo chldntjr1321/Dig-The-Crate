@@ -14,3 +14,14 @@
     -moz-osx-font-smoothing: grayscale;
   }
 }
+
+@layer components {
+  /* 카드 호버 시 위로 살짝 리프트 */
+  .album-card {
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .album-card-wrapper:hover .album-card {
+    transform: translateY(-4px);
+  }
+}
