@@ -72,6 +72,7 @@ Phase 1 작업 중 Phase 2 기능 미리 구현
 컴포넌트에서 직접 Supabase / API 호출
 any 타입 사용
 console.log 커밋
+허락 없이 커밋
 ```
 
 ## 허락이 필요한 것
