@@ -4,7 +4,7 @@ import AlbumCard from '../components/collection/AlbumCard'
 import EmptyCollection from '../components/collection/EmptyCollection'
 import DeleteConfirmModal from '../components/collection/DeleteConfirmModal'
 import CollectionHeader from '../components/collection/CollectionHeader'
-import { type SortOption } from '../components/collection/sortOptions'
+import { type SortOption } from '../utils/sortOptions'
 import type { Collection } from '../types'
 
 const MOCK_COLLECTIONS: Collection[] = [

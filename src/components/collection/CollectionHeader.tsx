@@ -1,5 +1,5 @@
 import SortDropdown from './SortDropdown'
-import { type SortOption } from './sortOptions'
+import { type SortOption } from '../../utils/sortOptions'
 
 interface CollectionHeaderProps {
   nickname: string
