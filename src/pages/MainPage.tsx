@@ -8,6 +8,7 @@ import CollectionHeader from '../components/collection/CollectionHeader'
 import { type SortOption } from '../utils/sortOptions'
 import useCollections from '../hooks/useCollections'
 import useAuth from '../hooks/useAuth'
+import useDelayedLoading from '../hooks/useDelayedLoading'
 
 const MainPage = () => {
   const { user } = useAuth()
@@ -16,12 +17,13 @@ const MainPage = () => {
   const [albumToDelete, setAlbumToDelete] = useState<string | null>(null)
 
   const { collections, isLoading } = useCollections(sortBy)
+  const showSkeleton = useDelayedLoading(isLoading)
 
   return (
     <div className="min-h-screen bg-page relative">
       <Header />
 
-      {collections.length === 0 && !isLoading ? (
+      {isLoading && !showSkeleton ? null : collections.length === 0 && !isLoading ? (
         <>
           <div
             className="absolute inset-0 bg-wall opacity-20 pointer-events-none mix-blend-overlay"
@@ -37,7 +39,7 @@ const MainPage = () => {
             className="bg-wall rounded-xl p-8 min-h-[calc(100vh-160px)]"
             style={{ boxShadow: 'inset 0 0 40px rgba(196, 133, 74, 0.02)' }}
           >
-            {isLoading ? (
+            {showSkeleton ? (
               <CollectionSkeleton />
             ) : (
               <>

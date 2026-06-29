@@ -5,9 +5,9 @@ import { sortCollections } from '../utils/sortCollections'
 import useAuth from './useAuth'
 
 const useCollections = (sortBy: SortOption) => {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isPending, isError } = useQuery({
     queryKey: ['collections', user?.id],
     queryFn: () => getCollections(user!.id),
     enabled: !!user,
@@ -15,7 +15,7 @@ const useCollections = (sortBy: SortOption) => {
 
   const collections = data ? sortCollections(data, sortBy) : []
 
-  return { collections, isLoading, isError }
+  return { collections, isLoading: loading || isPending, isError }
 }
 
 export default useCollections
