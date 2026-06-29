@@ -24,4 +24,21 @@
   .album-card-wrapper:hover .album-card {
     transform: translateY(-4px);
   }
+
+  /* 스켈레톤 shimmer */
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      #2A1E13 25%,
+      #3D2F22 50%,
+      #2A1E13 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
