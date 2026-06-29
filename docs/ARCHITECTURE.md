@@ -8,20 +8,23 @@ src/
 │   ├── supabase.ts        # Supabase 클라이언트 초기화
 │   └── queryClient.ts     # TanStack Query 전역 설정
 ├── services/
-│   ├── discogs.ts         # Discogs API 호출 함수
+│   ├── discogs.ts         # Discogs API 호출 함수 (미구현)
 │   └── collections.ts     # Supabase collections CRUD 함수
 ├── hooks/
 │   ├── useAuth.ts
 │   ├── useCollections.ts
-│   ├── useAddCollection.ts
-│   ├── useDeleteCollection.ts
-│   └── useDiscogsSearch.ts
+│   ├── useDelayedLoading.ts
+│   ├── useAddCollection.ts    # 미구현
+│   ├── useDeleteCollection.ts # 미구현
+│   └── useDiscogsSearch.ts    # 미구현
 ├── components/
 │   ├── ui/
 │   │   ├── Button.tsx
 │   │   ├── Input.tsx
 │   │   ├── LoadingSpinner.tsx
-│   │   └── PasswordToggle.tsx
+│   │   ├── Modal.tsx
+│   │   ├── PasswordToggle.tsx
+│   │   └── SkeletonBox.tsx
 │   ├── Header.tsx
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
@@ -29,11 +32,15 @@ src/
 │   │   └── SignupForm.tsx
 │   ├── collection/
 │   │   ├── AlbumCard.tsx
-│   │   └── EmptyCollection.tsx
+│   │   ├── CollectionHeader.tsx
+│   │   ├── CollectionSkeleton.tsx
+│   │   ├── DeleteConfirmModal.tsx
+│   │   ├── EmptyCollection.tsx
+│   │   └── SortDropdown.tsx
 │   └── search/
-│       ├── SearchInput.tsx
-│       ├── SearchResultList.tsx
-│       └── SearchResultCard.tsx
+│       ├── SearchInput.tsx        # 미구현
+│       ├── SearchResultList.tsx   # 미구현
+│       └── SearchResultCard.tsx   # 미구현
 ├── pages/
 │   ├── AuthPage.tsx
 │   ├── MainPage.tsx
@@ -41,7 +48,9 @@ src/
 ├── types/
 │   └── index.ts
 ├── utils/
-│   └── cn.ts
+│   ├── cn.ts
+│   ├── sortCollections.ts
+│   └── sortOptions.ts
 ├── router.tsx
 ├── App.tsx
 └── main.tsx
