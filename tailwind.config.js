@@ -8,6 +8,8 @@ export default {
         page: '#1A1108',       // bg-page
         wall: '#3D2514',       // bg-wall
         card: '#2A1E13',       // bg-card
+        form: '#281E14',       // bg-form (auth 폼 카드 배경)
+        field: '#1B1209',      // bg-field (인풋 필드 배경)
         header: '#120D07',     // bg-header
         primary: '#F5F0E8',    // text-primary
         secondary: '#A8A29E',  // text-secondary

@@ -40,6 +40,8 @@
 
 | 역할             | Hex               | 설명                    |
 | ---------------- | ----------------- | ----------------------- |
+| `form`           | `#281E14`         | auth 폼 카드 배경       |
+| `field`          | `#1B1209`         | 인풋 필드 배경          |
 | `disabled`       | `#4A3E35`         | 비활성 버튼 배경        |
 | `dimmed`         | `rgba(0,0,0,0.7)` | 카드 뒤집기 시 오버레이 |
 | `skeleton-base`  | `#2A1E13`         | 스켈레톤 기본           |
@@ -88,7 +90,7 @@
 ### 그리드
 
 ```
-데스크탑: 4열, gap-4
+데스크탑: 4열, gap-8
 태블릿:   3열, gap-3
 모바일:   2열, gap-3
 ```
@@ -122,13 +124,14 @@
 
 ```
 배경: 이미지가 100% 채움
-받침대: 카드 하단에 metal 컬러 얇은 라인 (h-1, bg-metal)
+받침대: 카드 하단에 metal 컬러 얇은 라인 (h-0.5, bg-metal), 카드보다 좌우 8px 더 길게
 border-radius: rounded-sm
 
 호버 시
-- 앨범명 + 아티스트명 하단에서 fade in
-  (배경: linear-gradient 투명 → 반투명 블랙)
-- 우상단 X 버튼 등장 (circle, bg-black/50)
+- 카드 위로 4px 리프트 (translateY(-4px), cubic-bezier)
+- 앨범명 + 아티스트명 하단에 fade in (배경: bg-black/60 단색)
+- 우상단 X 버튼 등장 (circle, bg-black/50), hover 시 아이콘 accent 색으로 변경
+- 받침대 metal → accent 색으로 전환
 
 스켈레톤
 - 같은 크기, bg-skeleton-base
