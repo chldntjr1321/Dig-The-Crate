@@ -6,7 +6,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   rightElement?: ReactNode
 }
 
-const Input = ({ label, id, className, rightElement, ...props }: InputProps) => {
+const AuthInput = ({ label, id, className, rightElement, ...props }: InputProps) => {
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
@@ -38,4 +38,4 @@ const Input = ({ label, id, className, rightElement, ...props }: InputProps) => 
   )
 }
 
-export default Input
+export default AuthInput

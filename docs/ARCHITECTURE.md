@@ -20,15 +20,15 @@ src/
 ├── components/
 │   ├── ui/
 │   │   ├── Button.tsx
-│   │   ├── Input.tsx
 │   │   ├── LoadingSpinner.tsx
 │   │   ├── Modal.tsx
-│   │   ├── PasswordToggle.tsx
 │   │   └── SkeletonBox.tsx
 │   ├── Header.tsx
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
+│   │   ├── AuthInput.tsx
 │   │   ├── LoginForm.tsx
+│   │   ├── PasswordToggle.tsx
 │   │   └── SignupForm.tsx
 │   ├── collection/
 │   │   ├── AlbumCard.tsx
