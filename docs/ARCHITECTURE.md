@@ -49,8 +49,7 @@ src/
 │   └── index.ts
 ├── utils/
 │   ├── cn.ts
-│   ├── sortCollections.ts
-│   └── sortOptions.ts
+│   └── sortCollections.ts
 ├── router.tsx
 ├── App.tsx
 └── main.tsx

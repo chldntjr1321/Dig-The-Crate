@@ -3,7 +3,7 @@ import Header from '../components/Header'
 import SearchInput from '../components/search/SearchInput'
 import SearchResultList from '../components/search/SearchResultList'
 import GenreTabs from '../components/search/GenreTabs'
-import type { Genre } from '../utils/genres'
+import type { Genre } from '../types'
 import SearchResultCard from '../components/search/SearchResultCard'
 import type { SearchResult } from '@/types'
 

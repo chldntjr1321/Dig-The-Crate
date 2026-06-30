@@ -1,4 +1,4 @@
-import { GENRES, type Genre } from '@/utils/genres'
+import { GENRES, type Genre } from '@/types'
 
 interface GenreTabsProps {
   selected: Genre

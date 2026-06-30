@@ -58,6 +58,28 @@ const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {}
 
 ---
 
+## utils와 types 구분
+
+`utils/` 폴더에는 순수 함수만 둔다. 타입과 상수(특히 타입과 짝을 이루는 상수)는 `types/index.ts`에 둔다.
+
+```typescript
+// 금지 - utils에 타입/상수를 두는 것
+// utils/sortOptions.ts
+export type SortOption = ...
+export const SORT_LABELS: Record<SortOption, string> = { ... }
+
+// 허용 - types/index.ts에 타입과 짝을 이루는 상수를 함께 둘
+export type SortOption = ...
+export const SORT_LABELS: Record<SortOption, string> = { ... }
+```
+
+판단 기준:
+- 함수 (로직) → `utils/`
+- 타입, 타입과 짝을 이루는 상수 (Record, 배열 등) → `types/index.ts`
+- 상수가 많아지면 (대략 5개 이상) `constants/` 폴더 분리를 제안한다.
+
+---
+
 ## 파일 네이밍
 
 ```

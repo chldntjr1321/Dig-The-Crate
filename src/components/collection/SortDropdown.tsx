@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { type SortOption, SORT_LABELS } from '../../utils/sortOptions'
+import { type SortOption, SORT_LABELS } from '../../types'
 
 interface SortDropdownProps {
   value: SortOption

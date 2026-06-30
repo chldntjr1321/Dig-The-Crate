@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getCollections } from '../services/collections'
-import { type SortOption } from '../utils/sortOptions'
+import { type SortOption } from '../types'
 import { sortCollections } from '../utils/sortCollections'
 import useAuth from './useAuth'
 
