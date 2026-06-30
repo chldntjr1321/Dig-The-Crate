@@ -1,5 +1,4 @@
-import { type Collection } from '../types'
-import { type SortOption } from './sortOptions'
+import { type Collection, type SortOption } from '../types'
 
 export const sortCollections = (
   collections: Collection[],
@@ -15,6 +14,8 @@ export const sortCollections = (
         return a.album_name.localeCompare(b.album_name)
       case 'release_year':
         return (a.year ?? '').localeCompare(b.year ?? '')
+      default:
+        return 0
     }
   })
 }

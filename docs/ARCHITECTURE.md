@@ -20,15 +20,15 @@ src/
 ├── components/
 │   ├── ui/
 │   │   ├── Button.tsx
-│   │   ├── Input.tsx
 │   │   ├── LoadingSpinner.tsx
 │   │   ├── Modal.tsx
-│   │   ├── PasswordToggle.tsx
 │   │   └── SkeletonBox.tsx
 │   ├── Header.tsx
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
+│   │   ├── AuthInput.tsx
 │   │   ├── LoginForm.tsx
+│   │   ├── PasswordToggle.tsx
 │   │   └── SignupForm.tsx
 │   ├── collection/
 │   │   ├── AlbumCard.tsx
@@ -38,9 +38,9 @@ src/
 │   │   ├── EmptyCollection.tsx
 │   │   └── SortDropdown.tsx
 │   └── search/
-│       ├── SearchInput.tsx        # 미구현
+│       ├── SearchInput.tsx
 │       ├── SearchResultList.tsx   # 미구현
-│       └── SearchResultCard.tsx   # 미구현
+│       └── SearchResultCard.tsx
 ├── pages/
 │   ├── AuthPage.tsx
 │   ├── MainPage.tsx
@@ -49,8 +49,7 @@ src/
 │   └── index.ts
 ├── utils/
 │   ├── cn.ts
-│   ├── sortCollections.ts
-│   └── sortOptions.ts
+│   └── sortCollections.ts
 ├── router.tsx
 ├── App.tsx
 └── main.tsx

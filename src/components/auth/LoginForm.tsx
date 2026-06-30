@@ -1,8 +1,8 @@
 import { useState, type SubmitEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import Button from '@/components/ui/Button'
-import Input from '@/components/ui/Input'
-import PasswordToggle from '@/components/ui/PasswordToggle'
+import AuthInput from '@/components/auth/AuthInput'
+import PasswordToggle from '@/components/auth/PasswordToggle'
 import useAuth from '@/hooks/useAuth'
 
 const LoginForm = () => {
@@ -33,7 +33,7 @@ const LoginForm = () => {
     <form onSubmit={handleSubmit} className="w-full max-w-md">
       <div className="bg-form border border-border rounded-lg px-8 py-8 flex flex-col gap-6">
         <div className="flex flex-col gap-4">
-          <Input
+          <AuthInput
             id="email"
             label="EMAIL"
             type="email"
@@ -58,7 +58,7 @@ const LoginForm = () => {
                 FORGOT?
               </button>
             </div>
-            <Input
+            <AuthInput
               id="password"
               type={showPassword ? 'text' : 'password'}
               placeholder="비밀번호를 입력하세요"
