@@ -197,7 +197,7 @@ const SearchPage = () => {
       <Header />
       <main className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto [scrollbar-gutter:stable]">
         <div className="max-w-2xl mx-auto px-6 py-10">
-          <SearchInput onSearch={setQuery} />
+          <SearchInput onSearch={(value) => { setQuery(value); setSelectedGenre('All') }} />
         </div>
 
         <div className="max-w-5xl mx-auto px-6 pb-12 flex flex-col gap-8">
