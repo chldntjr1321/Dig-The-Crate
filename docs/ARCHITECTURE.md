@@ -38,9 +38,9 @@ src/
 │   │   ├── EmptyCollection.tsx
 │   │   └── SortDropdown.tsx
 │   └── search/
-│       ├── SearchInput.tsx        # 미구현
+│       ├── SearchInput.tsx
 │       ├── SearchResultList.tsx   # 미구현
-│       └── SearchResultCard.tsx   # 미구현
+│       └── SearchResultCard.tsx
 ├── pages/
 │   ├── AuthPage.tsx
 │   ├── MainPage.tsx
