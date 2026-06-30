@@ -1,11 +1,9 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Header from '../components/Header'
 import SearchInput from '../components/search/SearchInput'
 import SearchResultList from '../components/search/SearchResultList'
-import GenreTabs from '../components/search/GenreTabs'
-import type { Genre } from '../types'
 import SearchResultCard from '../components/search/SearchResultCard'
-import type { SearchResult } from '@/types'
+import type { Genre, SearchResult } from '../types'
 
 const MOCK_RECOMMENDATIONS: Record<string, SearchResult[]> = {
   All: [
@@ -165,23 +163,24 @@ const ALL_MOCK_RESULTS: SearchResult[] = Array.from(
 
 const MOCK_ADDED_IDS = new Set(['r2'])
 
-const matchesGenre = (result: SearchResult, genre: Genre) =>
-  genre === 'All' || result.genres?.includes(genre)
+const RANDOM_RECOMMENDATIONS = ALL_MOCK_RESULTS.sort(() => Math.random() - 0.5).slice(0, 4)
 
 const SearchPage = () => {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState<string>('')
   const [selectedGenre, setSelectedGenre] = useState<Genre>('All')
   const [addedIds, setAddedIds] = useState<Set<string>>(MOCK_ADDED_IDS)
 
   const isSearching = query.length > 0
 
-  const recommendations = (MOCK_RECOMMENDATIONS[selectedGenre] ?? [])
-
-  const searchResults = ALL_MOCK_RESULTS.filter(
-    (r) =>
-      matchesGenre(r, selectedGenre) &&
-      (r.album_name.toLowerCase().includes(query.toLowerCase()) ||
-        r.artist_name.toLowerCase().includes(query.toLowerCase())),
+  const searchResults = useMemo(
+    () =>
+      ALL_MOCK_RESULTS.filter(
+        (r) =>
+          (selectedGenre === 'All' || r.genres?.includes(selectedGenre)) &&
+          (r.album_name.toLowerCase().includes(query.toLowerCase()) ||
+            r.artist_name.toLowerCase().includes(query.toLowerCase())),
+      ),
+    [query, selectedGenre],
   )
 
   const handleAdd = (id: string) => setAddedIds((prev) => new Set(prev).add(id))
@@ -198,36 +197,37 @@ const SearchPage = () => {
       <Header />
       <main className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto [scrollbar-gutter:stable]">
         <div className="max-w-2xl mx-auto px-6 py-10">
-          <SearchInput value={query} onChange={setQuery} />
+          <SearchInput onSearch={setQuery} />
         </div>
 
         <div className="max-w-5xl mx-auto px-6 pb-12 flex flex-col gap-8">
-          <div className="flex flex-col gap-6">
-            <GenreTabs selected={selectedGenre} onSelect={setSelectedGenre} />
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-8">
-              {recommendations.map((result) => (
-                <SearchResultCard
-                  key={result.discogs_id}
-                  result={result}
-                  isAdded={addedIds.has(result.discogs_id)}
-                  onAdd={() => handleAdd(result.discogs_id)}
-                  onRemove={() => handleRemove(result.discogs_id)}
-                />
-              ))}
+          {!isSearching && (
+            <div className="flex flex-col gap-6">
+              <p className="text-xs font-medium text-search-secondary tracking-widest">RECOMMEND</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-8">
+                {RANDOM_RECOMMENDATIONS.map((result) => (
+                  <SearchResultCard
+                    key={result.discogs_id}
+                    result={result}
+                    isAdded={addedIds.has(result.discogs_id)}
+                    onAdd={() => handleAdd(result.discogs_id)}
+                    onRemove={() => handleRemove(result.discogs_id)}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {isSearching && (
-            <>
-              <hr className="border-border-search" />
-              <SearchResultList
+            <SearchResultList
                 results={searchResults}
                 addedIds={addedIds}
                 onAdd={handleAdd}
                 onRemove={handleRemove}
                 hasSearched={true}
+                selectedGenre={selectedGenre}
+                onGenreSelect={setSelectedGenre}
               />
-            </>
           )}
         </div>
       </main>
