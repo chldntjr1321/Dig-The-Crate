@@ -1,4 +1,5 @@
 import { type ChangeEvent, type KeyboardEvent, useState } from 'react'
+import CloseIcon from '@/components/ui/CloseIcon'
 
 interface SearchInputProps {
   onSearch: (value: string) => void
@@ -22,6 +23,7 @@ const SearchIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
+// TODO: 아티스트 검색 / 곡 제목 검색을 선택할 수 있는 드롭다운 추가 예정
 const SearchInput = ({
   onSearch,
   placeholder = 'Search artists, albums, or genres...',
@@ -29,7 +31,10 @@ const SearchInput = ({
   const [inputValue, setInputValue] = useState('')
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
+    const value = e.target.value
+    setInputValue(value)
+    // 백스페이스로 입력값이 빈 문자열이 되면 X 버튼과 동일하게 즉시 검색 취소
+    if (value === '') onSearch('')
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -60,20 +65,7 @@ const SearchInput = ({
             className="text-search-secondary hover:text-search-primary cursor-pointer shrink-0"
             aria-label="검색어 지우기"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <CloseIcon className="w-4 h-4" />
           </button>
         )}
         <button
