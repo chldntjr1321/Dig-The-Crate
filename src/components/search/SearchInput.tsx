@@ -1,4 +1,5 @@
 import { type ChangeEvent, type KeyboardEvent, useState } from 'react'
+import CloseIcon from '@/components/ui/CloseIcon'
 
 interface SearchInputProps {
   onSearch: (value: string) => void
@@ -60,20 +61,7 @@ const SearchInput = ({
             className="text-search-secondary hover:text-search-primary cursor-pointer shrink-0"
             aria-label="검색어 지우기"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <CloseIcon className="w-4 h-4" />
           </button>
         )}
         <button

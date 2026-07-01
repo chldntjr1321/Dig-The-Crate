@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import type { SearchResult } from '@/types'
 import useReleaseDetail from '@/hooks/useReleaseDetail'
+import CloseIcon from '@/components/ui/CloseIcon'
+import TrackList from './TrackList'
 
 const MODAL_WIDTH = 480
 
@@ -103,20 +105,7 @@ const SearchResultCard = ({
                 className="text-secondary hover:text-primary cursor-pointer"
                 aria-label="닫기"
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <CloseIcon className="w-4 h-4" />
               </button>
             </div>
 
@@ -140,36 +129,7 @@ const SearchResultCard = ({
             <div className="mx-6 mt-4 border-t border-border" />
 
             <div className="overflow-y-auto max-h-64 px-6 py-2">
-              {isTracklistLoading ? (
-                <p className="text-muted text-sm text-center py-4">
-                  불러오는 중...
-                </p>
-              ) : tracklist.length > 0 ? (
-                tracklist.map((track, i) => (
-                  <div
-                    key={i}
-                    className="flex justify-between items-center py-2.5"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-muted text-xs w-5 shrink-0">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                      <span className="text-primary text-sm">
-                        {track.title}
-                      </span>
-                    </div>
-                    {track.duration && (
-                      <span className="text-muted text-xs shrink-0">
-                        {track.duration}
-                      </span>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <p className="text-muted text-sm text-center py-4">
-                  수록곡 정보가 없어요
-                </p>
-              )}
+              <TrackList tracklist={tracklist} isLoading={isTracklistLoading} />
             </div>
 
             {/* 컬렉션 추가/삭제 버튼 */}
