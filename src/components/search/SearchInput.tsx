@@ -30,7 +30,10 @@ const SearchInput = ({
   const [inputValue, setInputValue] = useState('')
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
+    const value = e.target.value
+    setInputValue(value)
+    // 백스페이스로 입력값이 빈 문자열이 되면 X 버튼과 동일하게 즉시 검색 취소
+    if (value === '') onSearch('')
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
