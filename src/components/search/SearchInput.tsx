@@ -23,6 +23,7 @@ const SearchIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
+// TODO: 아티스트 검색 / 곡 제목 검색을 선택할 수 있는 드롭다운 추가 예정
 const SearchInput = ({
   onSearch,
   placeholder = 'Search artists, albums, or genres...',

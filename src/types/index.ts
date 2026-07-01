@@ -7,7 +7,9 @@ export const SORT_LABELS: Record<SortOption, string> = {
   release_year: 'Release Year',
 }
 
-export const GENRES = ['All', 'Jazz', 'Rock', 'Electronic', 'Classical', 'Hip Hop', 'R&B'] as const
+// Discogs는 R&B를 별도 장르로 두지 않고 'Funk / Soul'로 분류하므로,
+// 매핑 없이 API가 실제로 쓰는 값을 그대로 탭 라벨로 사용한다.
+export const GENRES = ['All', 'Jazz', 'Rock', 'Electronic', 'Classical', 'Hip Hop', 'Funk / Soul'] as const
 export type Genre = (typeof GENRES)[number]
 
 export interface Track {
