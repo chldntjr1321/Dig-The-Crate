@@ -3,20 +3,23 @@ import Header from '../components/Header'
 import SearchInput from '../components/search/SearchInput'
 import SearchResultList from '../components/search/SearchResultList'
 import SearchResultCard from '../components/search/SearchResultCard'
+import Toast from '../components/ui/Toast'
 import useDiscogsSearch from '../hooks/useDiscogsSearch'
 import useRecommendations from '../hooks/useRecommendations'
+import useCollections from '../hooks/useCollections'
 import type { Genre } from '../types'
 
 const SearchPage = () => {
   const [query, setQuery] = useState<string>('')
   const [selectedGenre, setSelectedGenre] = useState<Genre>('All')
-  const [addedIds, setAddedIds] = useState<Set<string>>(new Set())
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   const isSearching = query.length > 0
 
   const { results, isLoading, errorMessage } = useDiscogsSearch(query)
   const { recommendations, isLoading: isRecommendationsLoading } =
     useRecommendations()
+  const { collections } = useCollections('recently_added')
 
   const searchResults = useMemo(
     () =>
@@ -26,14 +29,10 @@ const SearchPage = () => {
     [results, selectedGenre],
   )
 
-  const handleAdd = (id: string) => setAddedIds((prev) => new Set(prev).add(id))
-  const handleRemove = (id: string) => {
-    setAddedIds((prev) => {
-      const next = new Set(prev)
-      next.delete(id)
-      return next
-    })
-  }
+  const collectionIdByDiscogsId = useMemo(
+    () => new Map(collections.map((collection) => [collection.discogs_id, collection.id])),
+    [collections],
+  )
 
   return (
     <div className="bg-search">
@@ -64,9 +63,8 @@ const SearchPage = () => {
                     <SearchResultCard
                       key={result.discogs_id}
                       result={result}
-                      isAdded={addedIds.has(result.discogs_id)}
-                      onAdd={() => handleAdd(result.discogs_id)}
-                      onRemove={() => handleRemove(result.discogs_id)}
+                      collectionId={collectionIdByDiscogsId.get(result.discogs_id)}
+                      onError={setToastMessage}
                     />
                   ))}
                 </div>
@@ -89,9 +87,8 @@ const SearchPage = () => {
               {!errorMessage && !isLoading && (
                 <SearchResultList
                   results={searchResults}
-                  addedIds={addedIds}
-                  onAdd={handleAdd}
-                  onRemove={handleRemove}
+                  collectionIdByDiscogsId={collectionIdByDiscogsId}
+                  onError={setToastMessage}
                   hasSearched={true}
                   selectedGenre={selectedGenre}
                   onGenreSelect={setSelectedGenre}
@@ -101,6 +98,10 @@ const SearchPage = () => {
           )}
         </div>
       </main>
+
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      )}
     </div>
   )
 }

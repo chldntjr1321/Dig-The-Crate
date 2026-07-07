@@ -4,9 +4,8 @@ import SearchResultCard from './SearchResultCard'
 
 interface SearchResultListProps {
   results: SearchResult[]
-  addedIds: Set<string>
-  onAdd: (id: string) => void
-  onRemove: (id: string) => void
+  collectionIdByDiscogsId: Map<string, string>
+  onError: (message: string) => void
   hasSearched: boolean
   selectedGenre: Genre
   onGenreSelect: (genre: Genre) => void
@@ -14,9 +13,8 @@ interface SearchResultListProps {
 
 const SearchResultList = ({
   results,
-  addedIds,
-  onAdd,
-  onRemove,
+  collectionIdByDiscogsId,
+  onError,
   hasSearched,
   selectedGenre,
   onGenreSelect,
@@ -37,9 +35,8 @@ const SearchResultList = ({
             <SearchResultCard
               key={result.discogs_id}
               result={result}
-              isAdded={addedIds.has(result.discogs_id)}
-              onAdd={() => onAdd(result.discogs_id)}
-              onRemove={() => onRemove(result.discogs_id)}
+              collectionId={collectionIdByDiscogsId.get(result.discogs_id)}
+              onError={onError}
             />
           ))}
         </div>

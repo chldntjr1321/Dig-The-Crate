@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import type { SearchResult } from '@/types'
 import useReleaseDetail from '@/hooks/useReleaseDetail'
+import useAddCollection from '@/hooks/useAddCollection'
+import useDeleteCollection from '@/hooks/useDeleteCollection'
 import CloseIcon from '@/components/ui/CloseIcon'
 import TrackList from './TrackList'
 
@@ -8,19 +10,24 @@ const MODAL_WIDTH = 480
 
 interface SearchResultCardProps {
   result: SearchResult
-  isAdded: boolean
-  isPending?: boolean
-  onAdd: () => void
-  onRemove: () => void
+  collectionId?: string
+  onError: (message: string) => void
 }
 
-const SearchResultCard = ({
-  result,
-  isAdded,
-  isPending = false,
-  onAdd,
-  onRemove,
-}: SearchResultCardProps) => {
+const SearchResultCard = ({ result, collectionId, onError }: SearchResultCardProps) => {
+  const isAdded = Boolean(collectionId)
+  const { addCollection, isPending: isAdding } = useAddCollection(onError)
+  const { deleteCollection, isPending: isDeleting } = useDeleteCollection(onError)
+  const isPending = isAdding || isDeleting
+
+  const handleToggle = () => {
+    if (isAdded) {
+      deleteCollection(collectionId!)
+    } else {
+      addCollection(result)
+    }
+  }
+
   const [isOpen, setIsOpen] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
   const [cardRect, setCardRect] = useState<DOMRect | null>(null)
@@ -134,7 +141,7 @@ const SearchResultCard = ({
 
             {/* 컬렉션 추가/삭제 버튼 */}
             <button
-              onClick={isAdded ? onRemove : onAdd}
+              onClick={handleToggle}
               disabled={isPending}
               className={[
                 'py-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors',
