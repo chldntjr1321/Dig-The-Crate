@@ -3,8 +3,8 @@ import Header from '../components/Header'
 import AlbumCard from '../components/collection/AlbumCard'
 import CollectionSkeleton from '../components/collection/CollectionSkeleton'
 import EmptyCollection from '../components/collection/EmptyCollection'
-import DeleteConfirmModal from '../components/collection/DeleteConfirmModal'
 import CollectionHeader from '../components/collection/CollectionHeader'
+import Toast from '../components/ui/Toast'
 import { type SortOption } from '../types'
 import useCollections from '../hooks/useCollections'
 import useAuth from '../hooks/useAuth'
@@ -26,7 +26,7 @@ const MainPage = () => {
   const { user } = useAuth()
   const nickname = user?.user_metadata?.nickname ?? ''
   const [sortBy, setSortBy] = useState<SortOption>('recently_added')
-  const [albumToDelete, setAlbumToDelete] = useState<string | null>(null)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   const { collections: realCollections, isLoading } = useCollections(sortBy)
   const collections = realCollections.length > 0 ? realCollections : MOCK_COLLECTIONS
@@ -68,7 +68,7 @@ const MainPage = () => {
                       <AlbumCard
                         key={album.id}
                         album={album}
-                        onDeleteClick={() => setAlbumToDelete(album.id)}
+                        onError={setToastMessage}
                       />
                     ))}
                   </div>
@@ -79,11 +79,8 @@ const MainPage = () => {
         )}
       </main>
 
-      {albumToDelete !== null && (
-        <DeleteConfirmModal
-          onConfirm={() => setAlbumToDelete(null)}
-          onCancel={() => setAlbumToDelete(null)}
-        />
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
     </div>
   )
