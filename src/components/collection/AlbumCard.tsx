@@ -1,11 +1,22 @@
+import { useState } from 'react'
 import type { Collection } from '../../types'
+import useDeleteCollection from '../../hooks/useDeleteCollection'
+import DeleteConfirmModal from './DeleteConfirmModal'
 
 interface AlbumCardProps {
   album: Collection
-  onDeleteClick: () => void
+  onError: (message: string) => void
 }
 
-const AlbumCard = ({ album, onDeleteClick }: AlbumCardProps) => {
+const AlbumCard = ({ album, onError }: AlbumCardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { deleteCollection, isPending } = useDeleteCollection(onError)
+
+  const handleConfirm = () => {
+    deleteCollection(album.id)
+    setIsModalOpen(false)
+  }
+
   return (
     <div className="album-card-wrapper relative group cursor-pointer">
       {/* 앨범 커버 */}
@@ -21,8 +32,9 @@ const AlbumCard = ({ album, onDeleteClick }: AlbumCardProps) => {
           {/* X 버튼 (상단 우측) */}
           <div className="flex justify-end">
             <button
-              onClick={onDeleteClick}
-              className="group/btn w-7 h-7 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+              disabled={isPending}
+              className="group/btn w-7 h-7 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed"
               aria-label="앨범 삭제"
             >
               <svg
@@ -57,6 +69,13 @@ const AlbumCard = ({ album, onDeleteClick }: AlbumCardProps) => {
 
       {/* 받침대 메탈 라인 — 카드보다 좌우 8px씩 더 길게 */}
       <div className="mt-1 h-0.5 bg-metal group-hover:bg-accent transition-colors duration-300 w-[calc(100%+16px)] -ml-2" />
+
+      {isModalOpen && (
+        <DeleteConfirmModal
+          onConfirm={handleConfirm}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      )}
     </div>
   )
 }
