@@ -37,7 +37,7 @@ const MainPage = () => {
         ) : (
           <div className="pt-8 pb-12 px-4 md:px-16 max-w-[1440px] mx-auto w-full">
             <div
-              className="bg-wall rounded-xl p-8 min-h-[calc(100vh-8rem)]"
+              className="bg-wall rounded-xl p-8 min-h-[calc(100vh-9rem)]"
               style={{ boxShadow: 'inset 0 0 40px rgba(196, 133, 74, 0.02)' }}
             >
               {showSkeleton ? (
