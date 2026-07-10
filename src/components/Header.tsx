@@ -8,7 +8,7 @@ const Header = () => {
   const { signOut } = useAuth()
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-10 flex gap-2 items-center h-16 px-32 bg-header border-b border-border">
+    <header className="sticky top-0 z-10 flex gap-2 items-center h-16 px-32 bg-header border-b border-border">
       {/* 로고 */}
       <NavLink
         to="/"
