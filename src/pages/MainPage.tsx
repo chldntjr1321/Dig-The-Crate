@@ -20,10 +20,10 @@ const MainPage = () => {
   const showSkeleton = useDelayedLoading(isLoading)
 
   return (
-    <div className="bg-page relative">
+    <div className="bg-page relative flex flex-col h-screen">
       <Header />
 
-      <main className="mt-16 h-[calc(100vh-4rem)] overflow-y-auto [scrollbar-gutter:stable] relative">
+      <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable] relative">
         {isLoading && !showSkeleton ? null : collections.length === 0 && !isLoading ? (
           <>
             <div
@@ -35,9 +35,9 @@ const MainPage = () => {
             </div>
           </>
         ) : (
-          <div className="pt-8 pb-12 px-4 md:px-16 max-w-[1440px] mx-auto w-full">
+          <div className="h-full pt-8 pb-12 px-4 md:px-16 max-w-[1440px] mx-auto w-full">
             <div
-              className="bg-wall rounded-xl p-8 min-h-[calc(100vh-9rem)]"
+              className="bg-wall rounded-xl p-8 min-h-full"
               style={{ boxShadow: 'inset 0 0 40px rgba(196, 133, 74, 0.02)' }}
             >
               {showSkeleton ? (
