@@ -5,7 +5,7 @@ const Header = () => {
   const { signOut } = useAuth()
 
   return (
-    <header className="sticky top-0 z-10 flex gap-2 items-center h-16 px-32 bg-header border-b border-border">
+    <header className="sticky top-0 z-10 flex gap-2 items-center h-16 px-4 md:px-16 bg-header border-b border-border">
       {/* 로고 */}
       <NavLink
         to="/"
@@ -15,7 +15,7 @@ const Header = () => {
       </NavLink>
 
       {/* 우측 아이콘 */}
-      <div className="ml-auto flex items-center gap-4">
+      <div className="ml-auto flex items-center gap-6">
         {/* 검색 돋보기 → 검색 페이지 이동 */}
         <NavLink to="/search" aria-label="검색 페이지로 이동">
           <svg
