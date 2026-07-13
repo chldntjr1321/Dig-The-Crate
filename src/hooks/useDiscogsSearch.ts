@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import {
   DiscogsNetworkError,
   DiscogsRateLimitError,
@@ -6,9 +6,22 @@ import {
 } from '../services/discogs'
 
 const useDiscogsSearch = (query: string) => {
-  const { data, isPending, isError, error } = useQuery({
+  const {
+    data,
+    isPending,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ['discogs-search', query],
-    queryFn: () => searchAlbums(query),
+    queryFn: ({ pageParam }) => searchAlbums(query, pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.pagination.page < lastPage.pagination.pages
+        ? lastPage.pagination.page + 1
+        : undefined,
     enabled: query.length > 0,
   })
 
@@ -20,9 +33,12 @@ const useDiscogsSearch = (query: string) => {
     : null
 
   return {
-    results: data ?? [],
+    results: data?.pages.flatMap((page) => page.results) ?? [],
     isLoading: query.length > 0 && isPending,
     errorMessage,
+    fetchNextPage,
+    hasNextPage: hasNextPage ?? false,
+    isFetchingNextPage,
   }
 }
 
