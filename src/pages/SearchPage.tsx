@@ -16,10 +16,24 @@ const SearchPage = () => {
 
   const isSearching = query.length > 0
 
-  const { results, isLoading, errorMessage } = useDiscogsSearch(query)
+  const {
+    results,
+    isLoading,
+    errorMessage,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useDiscogsSearch(query)
   const { recommendations, isLoading: isRecommendationsLoading } =
     useRecommendations()
   const { collections } = useCollections('recently_added')
+
+  // 결과가 하나도 없는 상태에서 실패하면 검색 자체가 실패한 것(초기 에러)이고,
+  // 이미 쌓인 결과가 있는 상태에서 실패하면 다음 페이지 로드만 실패한 것이므로
+  // 기존 결과는 그대로 보여주고 다음 페이지 영역에만 에러를 표시한다.
+  const hasResults = results.length > 0
+  const isInitialError = errorMessage !== null && !hasResults
+  const nextPageErrorMessage = hasResults ? errorMessage : null
 
   const searchResults = useMemo(
     () =>
@@ -74,17 +88,17 @@ const SearchPage = () => {
 
           {isSearching && (
             <>
-              {errorMessage && (
+              {isInitialError && (
                 <p className="text-search-secondary text-sm text-center py-16">
                   {errorMessage}
                 </p>
               )}
-              {!errorMessage && isLoading && (
+              {!isInitialError && isLoading && (
                 <p className="text-search-secondary text-sm text-center py-16">
                   검색 중...
                 </p>
               )}
-              {!errorMessage && !isLoading && (
+              {!isInitialError && !isLoading && (
                 <SearchResultList
                   results={searchResults}
                   collectionIdByDiscogsId={collectionIdByDiscogsId}
@@ -92,6 +106,10 @@ const SearchPage = () => {
                   hasSearched={true}
                   selectedGenre={selectedGenre}
                   onGenreSelect={setSelectedGenre}
+                  hasNextPage={hasNextPage}
+                  isFetchingNextPage={isFetchingNextPage}
+                  nextPageErrorMessage={nextPageErrorMessage}
+                  onLoadMore={fetchNextPage}
                 />
               )}
             </>
