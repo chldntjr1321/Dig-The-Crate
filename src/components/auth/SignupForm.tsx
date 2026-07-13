@@ -1,45 +1,42 @@
-import { useState, type SubmitEvent } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import Button from '@/components/ui/Button'
 import AuthInput from '@/components/auth/AuthInput'
 import PasswordToggle from '@/components/auth/PasswordToggle'
 import useAuth from '@/hooks/useAuth'
+import { signupSchema, type SignupFormValues } from '@/schemas/auth'
 
 const SignupForm = () => {
-  const [email, setEmail] = useState('')
-  const [nickname, setNickname] = useState('')
-  const [password, setPassword] = useState('')
-  const [passwordConfirm, setPasswordConfirm] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [authError, setAuthError] = useState('')
 
   const { signUp } = useAuth()
   const navigate = useNavigate()
 
-  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (password !== passwordConfirm) {
-      setError('비밀번호가 일치하지 않습니다.')
-      return
-    }
-    setError('')
-    setLoading(true)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
+    mode: 'onBlur',
+  })
+
+  const onSubmit = async ({ email, password, nickname }: SignupFormValues) => {
+    setAuthError('')
     try {
       await signUp(email, password, nickname)
       navigate('/')
     } catch {
-      setError('회원가입에 실패했습니다. 다시 시도해주세요.')
-    } finally {
-      setLoading(false)
+      setAuthError('회원가입에 실패했습니다. 다시 시도해주세요.')
     }
   }
 
-  const isValid = email && nickname && password && passwordConfirm
-
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md">
       <div className="bg-form border border-border rounded-lg px-8 py-8 flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           <AuthInput
@@ -48,8 +45,8 @@ const SignupForm = () => {
             type="email"
             placeholder="이메일을 입력하세요"
             autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            errorMessage={errors.email?.message}
+            {...register('email')}
           />
 
           <AuthInput
@@ -58,8 +55,8 @@ const SignupForm = () => {
             type="text"
             placeholder="닉네임을 입력하세요"
             autoComplete="username"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            errorMessage={errors.nickname?.message}
+            {...register('nickname')}
           />
 
           <div className="flex flex-col gap-1.5">
@@ -74,14 +71,14 @@ const SignupForm = () => {
               type={showPassword ? 'text' : 'password'}
               placeholder="비밀번호를 입력하세요"
               autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              errorMessage={errors.password?.message}
               rightElement={
                 <PasswordToggle
                   show={showPassword}
                   onToggle={() => setShowPassword((prev) => !prev)}
                 />
               }
+              {...register('password')}
             />
           </div>
 
@@ -97,22 +94,22 @@ const SignupForm = () => {
               type={showPasswordConfirm ? 'text' : 'password'}
               placeholder="비밀번호를 다시 입력하세요"
               autoComplete="new-password"
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
+              errorMessage={errors.passwordConfirm?.message}
               rightElement={
                 <PasswordToggle
                   show={showPasswordConfirm}
                   onToggle={() => setShowPasswordConfirm((prev) => !prev)}
                 />
               }
+              {...register('passwordConfirm')}
             />
           </div>
 
-          {error && <p className="text-xs text-red-400">{error}</p>}
+          {authError && <p className="text-xs text-red-400">{authError}</p>}
         </div>
 
-        <Button type="submit" disabled={loading || !isValid}>
-          {loading ? '가입 중...' : '회원가입'}
+        <Button type="submit" disabled={isSubmitting || !isValid}>
+          {isSubmitting ? '가입 중...' : '회원가입'}
         </Button>
       </div>
 
