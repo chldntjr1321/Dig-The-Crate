@@ -16,7 +16,14 @@ const SearchPage = () => {
 
   const isSearching = query.length > 0
 
-  const { results, isLoading, errorMessage } = useDiscogsSearch(query)
+  const {
+    results,
+    isLoading,
+    errorMessage,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useDiscogsSearch(query)
   const { recommendations, isLoading: isRecommendationsLoading } =
     useRecommendations()
   const { collections } = useCollections('recently_added')
@@ -92,6 +99,9 @@ const SearchPage = () => {
                   hasSearched={true}
                   selectedGenre={selectedGenre}
                   onGenreSelect={setSelectedGenre}
+                  hasNextPage={hasNextPage}
+                  isFetchingNextPage={isFetchingNextPage}
+                  onLoadMore={fetchNextPage}
                 />
               )}
             </>
