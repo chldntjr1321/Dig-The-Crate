@@ -12,6 +12,7 @@ interface SearchResultListProps {
   onGenreSelect: (genre: Genre) => void
   hasNextPage: boolean
   isFetchingNextPage: boolean
+  nextPageErrorMessage: string | null
   onLoadMore: () => void
 }
 
@@ -24,11 +25,15 @@ const SearchResultList = ({
   onGenreSelect,
   hasNextPage,
   isFetchingNextPage,
+  nextPageErrorMessage,
   onLoadMore,
 }: SearchResultListProps) => {
   const sentinelRef = useInfiniteScroll<HTMLDivElement>({
     onIntersect: onLoadMore,
-    enabled: hasNextPage && !isFetchingNextPage,
+    // 다음 페이지 요청이 실패한 상태에서는 sentinel이 계속 화면에 보이는 한
+    // observer가 재관찰될 때마다 fetchNextPage가 즉시 재호출되어 무한 재시도로
+    // 이어질 수 있어, 에러 상태에서는 자동 재시도를 멈춘다.
+    enabled: hasNextPage && !isFetchingNextPage && !nextPageErrorMessage,
   })
 
   if (!hasSearched) return null
@@ -59,6 +64,11 @@ const SearchResultList = ({
           {isFetchingNextPage && (
             <p className="text-search-secondary text-sm text-center py-6">
               앨범 꺼내는 중...
+            </p>
+          )}
+          {nextPageErrorMessage && (
+            <p className="text-search-secondary text-sm text-center py-6">
+              {nextPageErrorMessage}
             </p>
           )}
         </>
