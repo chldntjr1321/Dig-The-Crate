@@ -60,7 +60,7 @@ const SearchResultList = ({
               />
             ))}
           </div>
-          <div ref={sentinelRef} className="h-4" />
+          <div ref={sentinelRef} />
           {isFetchingNextPage && (
             <p className="text-search-secondary text-sm text-center py-6">
               앨범 꺼내는 중...
