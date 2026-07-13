@@ -60,16 +60,23 @@ const SearchResultList = ({
               />
             ))}
           </div>
-          <div ref={sentinelRef} />
+          <div ref={sentinelRef} className="h-4" />
           {isFetchingNextPage && (
             <p className="text-search-secondary text-sm text-center py-6">
               앨범 꺼내는 중...
             </p>
           )}
           {nextPageErrorMessage && (
-            <p className="text-search-secondary text-sm text-center py-6">
-              {nextPageErrorMessage}
-            </p>
+            <div className="flex flex-col items-center gap-2 py-6">
+              <p className="text-search-secondary text-sm">{nextPageErrorMessage}</p>
+              <button
+                type="button"
+                onClick={onLoadMore}
+                className="text-accent hover:text-accent-hover text-sm cursor-pointer"
+              >
+                다시 시도
+              </button>
+            </div>
           )}
         </>
       )}
