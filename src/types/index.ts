@@ -28,6 +28,17 @@ export interface SearchResult {
   tracklist?: Track[]
 }
 
+export interface SearchPagination {
+  page: number
+  pages: number
+  items: number
+}
+
+export interface SearchAlbumsResult {
+  results: SearchResult[]
+  pagination: SearchPagination
+}
+
 export interface Collection {
   id: string
   user_id: string

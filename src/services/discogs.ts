@@ -1,5 +1,5 @@
 import { parseDiscogsTitle } from '../utils/parseDiscogsTitle'
-import type { SearchResult, Track } from '../types'
+import type { SearchAlbumsResult, SearchResult, Track } from '../types'
 
 const BASE_URL = 'https://api.discogs.com'
 
@@ -82,14 +82,21 @@ export const searchAlbums = async (
   query: string,
   page = 1,
   perPage = 20,
-): Promise<SearchResult[]> => {
+): Promise<SearchAlbumsResult> => {
   const data = await request<DiscogsSearchResponse>('/database/search', {
     q: query,
     type: 'release', // artist, label 등 다른 타입 제외하고 실제 발매반(release)만 검색
     per_page: perPage,
     page,
   })
-  return data.results.map(mapToSearchResult)
+  return {
+    results: data.results.map(mapToSearchResult),
+    pagination: {
+      page: data.pagination.page,
+      pages: data.pagination.pages,
+      items: data.pagination.items,
+    },
+  }
 }
 
 export const searchByGenre = async (
