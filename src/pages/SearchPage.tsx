@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Header from '../components/Header'
 import SearchInput from '../components/search/SearchInput'
 import SearchResultList from '../components/search/SearchResultList'
 import SearchResultCard from '../components/search/SearchResultCard'
+import ScrollToTopButton from '../components/search/ScrollToTopButton'
 import Toast from '../components/ui/Toast'
 import useDiscogsSearch from '../hooks/useDiscogsSearch'
 import useRecommendations from '../hooks/useRecommendations'
@@ -13,6 +14,7 @@ const SearchPage = () => {
   const [query, setQuery] = useState<string>('')
   const [selectedGenre, setSelectedGenre] = useState<Genre>('All')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const scrollContainerRef = useRef<HTMLElement>(null)
 
   const isSearching = query.length > 0
 
@@ -44,14 +46,20 @@ const SearchPage = () => {
   )
 
   const collectionIdByDiscogsId = useMemo(
-    () => new Map(collections.map((collection) => [collection.discogs_id, collection.id])),
+    () =>
+      new Map(
+        collections.map((collection) => [collection.discogs_id, collection.id]),
+      ),
     [collections],
   )
 
   return (
     <div className="bg-search flex flex-col h-screen">
       <Header />
-      <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+      <main
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto [scrollbar-gutter:stable]"
+      >
         <div className="max-w-2xl mx-auto px-6 py-10">
           <SearchInput
             onSearch={(value) => {
@@ -69,7 +77,7 @@ const SearchPage = () => {
               </p>
               {isRecommendationsLoading ? (
                 <p className="text-search-secondary text-sm text-center py-16">
-                  불러오는 중...
+                  앨범 꺼내는 중...
                 </p>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-8">
@@ -77,7 +85,9 @@ const SearchPage = () => {
                     <SearchResultCard
                       key={result.discogs_id}
                       result={result}
-                      collectionId={collectionIdByDiscogsId.get(result.discogs_id)}
+                      collectionId={collectionIdByDiscogsId.get(
+                        result.discogs_id,
+                      )}
                       onError={setToastMessage}
                     />
                   ))}
@@ -116,6 +126,10 @@ const SearchPage = () => {
           )}
         </div>
       </main>
+
+      {isSearching && (
+        <ScrollToTopButton scrollContainerRef={scrollContainerRef} />
+      )}
 
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
