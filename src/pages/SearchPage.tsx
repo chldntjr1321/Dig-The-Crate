@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import SearchInput from '../components/search/SearchInput'
 import SearchResultList from '../components/search/SearchResultList'
 import SearchResultCard from '../components/search/SearchResultCard'
+import ScrollToTopButton from '../components/search/ScrollToTopButton'
 import Toast from '../components/ui/Toast'
 import useDiscogsSearch from '../hooks/useDiscogsSearch'
 import useRecommendations from '../hooks/useRecommendations'
@@ -120,6 +121,10 @@ const SearchPage = () => {
           )}
         </div>
       </main>
+
+      {isSearching && (
+        <ScrollToTopButton scrollContainerRef={scrollContainerRef} />
+      )}
 
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
