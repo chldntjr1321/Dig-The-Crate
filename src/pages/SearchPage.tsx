@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Header from '../components/Header'
 import SearchInput from '../components/search/SearchInput'
 import SearchResultList from '../components/search/SearchResultList'
@@ -13,6 +13,7 @@ const SearchPage = () => {
   const [query, setQuery] = useState<string>('')
   const [selectedGenre, setSelectedGenre] = useState<Genre>('All')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const scrollContainerRef = useRef<HTMLElement>(null)
 
   const isSearching = query.length > 0
 
@@ -51,7 +52,10 @@ const SearchPage = () => {
   return (
     <div className="bg-search flex flex-col h-screen">
       <Header />
-      <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+      <main
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto [scrollbar-gutter:stable]"
+      >
         <div className="max-w-2xl mx-auto px-6 py-10">
           <SearchInput
             onSearch={(value) => {
