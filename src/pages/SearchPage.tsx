@@ -46,7 +46,10 @@ const SearchPage = () => {
   )
 
   const collectionIdByDiscogsId = useMemo(
-    () => new Map(collections.map((collection) => [collection.discogs_id, collection.id])),
+    () =>
+      new Map(
+        collections.map((collection) => [collection.discogs_id, collection.id]),
+      ),
     [collections],
   )
 
@@ -74,7 +77,7 @@ const SearchPage = () => {
               </p>
               {isRecommendationsLoading ? (
                 <p className="text-search-secondary text-sm text-center py-16">
-                  불러오는 중...
+                  앨범 꺼내는 중...
                 </p>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-8">
@@ -82,7 +85,9 @@ const SearchPage = () => {
                     <SearchResultCard
                       key={result.discogs_id}
                       result={result}
-                      collectionId={collectionIdByDiscogsId.get(result.discogs_id)}
+                      collectionId={collectionIdByDiscogsId.get(
+                        result.discogs_id,
+                      )}
                       onError={setToastMessage}
                     />
                   ))}
