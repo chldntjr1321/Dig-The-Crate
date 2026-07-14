@@ -1,14 +1,11 @@
 import { NavLink } from 'react-router'
 import useAuth from '../hooks/useAuth'
 
-const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `text-[14px] transition-colors ${isActive ? 'text-accent' : 'text-secondary hover:text-primary'}`
-
 const Header = () => {
   const { signOut } = useAuth()
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-10 flex gap-2 items-center h-16 px-32 bg-header border-b border-border">
+    <header className="sticky top-0 z-10 flex gap-2 items-center h-16 px-4 md:px-16 bg-header border-b border-border">
       {/* 로고 */}
       <NavLink
         to="/"
@@ -17,22 +14,10 @@ const Header = () => {
         DigTheCrate
       </NavLink>
 
-      {/* 네비게이션 */}
-      <nav className="flex items-center gap-6" aria-label="주요 메뉴">
-        <NavLink to="/" end className={navLinkClass}>
-          Collection
-        </NavLink>
-
-        <NavLink to="/search" className={navLinkClass}>
-          Search
-        </NavLink>
-      </nav>
-
       {/* 우측 아이콘 */}
-      <div className="ml-auto flex items-center gap-4">
-        {/* 검색 돋보기 */}
-        {/* TODO: 검색 모달 또는 인풋 구현 후 onClick 연결 */}
-        <button onClick={() => {}} aria-label="검색" className="cursor-pointer">
+      <div className="ml-auto flex items-center gap-6">
+        {/* 검색 돋보기 → 검색 페이지 이동 */}
+        <NavLink to="/search" aria-label="검색 페이지로 이동">
           <svg
             width="18"
             height="18"
@@ -55,7 +40,7 @@ const Header = () => {
               strokeLinecap="round"
             />
           </svg>
-        </button>
+        </NavLink>
 
         <button onClick={signOut} aria-label="로그아웃" className="cursor-pointer">
           <svg
