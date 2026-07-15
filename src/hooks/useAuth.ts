@@ -43,7 +43,17 @@ const useAuth = () => {
     if (error) throw error
   }
 
-  return { user, loading, signIn, signUp, signOut }
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
+    if (error) throw error
+  }
+
+  const signInWithKakao = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'kakao' })
+    if (error) throw error
+  }
+
+  return { user, loading, signIn, signUp, signOut, signInWithGoogle, signInWithKakao }
 }
 
 export default useAuth
