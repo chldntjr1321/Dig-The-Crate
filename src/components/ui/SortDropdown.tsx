@@ -48,7 +48,7 @@ const SortDropdown = <T extends string,>({
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         className={cn(
-          'flex items-center justify-between gap-2 px-4 py-2 w-44 border rounded-lg transition-colors duration-200 cursor-pointer',
+          'flex items-center justify-between gap-2 px-4 py-2 w-40 border rounded-lg transition-colors duration-200 cursor-pointer',
           styles.button,
         )}
         aria-haspopup="listbox"
@@ -79,7 +79,7 @@ const SortDropdown = <T extends string,>({
         <ul
           role="listbox"
           className={cn(
-            'absolute top-full right-0 mt-1 border rounded-lg overflow-hidden z-10 w-44',
+            'absolute top-full right-0 mt-1 border rounded-lg overflow-hidden z-10 w-40',
             styles.panel,
           )}
         >
