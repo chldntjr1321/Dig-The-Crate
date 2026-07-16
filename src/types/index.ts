@@ -7,6 +7,15 @@ export const SORT_LABELS: Record<SortOption, string> = {
   release_year: 'Release Year',
 }
 
+export type SearchSortOption = 'relevance' | 'release_year' | 'album_name' | 'artist_name'
+
+export const SEARCH_SORT_LABELS: Record<SearchSortOption, string> = {
+  relevance: '관련도순',
+  release_year: '발매 연도순',
+  album_name: '앨범명순',
+  artist_name: '아티스트명순',
+}
+
 // Discogs는 R&B를 별도 장르로 두지 않고 'Funk / Soul'로 분류하므로,
 // 매핑 없이 API가 실제로 쓰는 값을 그대로 탭 라벨로 사용한다.
 export const GENRES = ['All', 'Jazz', 'Rock', 'Electronic', 'Classical', 'Hip Hop', 'Funk / Soul'] as const
