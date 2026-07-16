@@ -4,6 +4,7 @@ export interface PlayingAlbum {
   coverUrl: string
   albumName: string
   artistName: string
+  previewUrl: string | null
 }
 
 export interface PlayerContextValue {

@@ -6,6 +6,7 @@ interface AlbumCardOverlayProps {
   albumName: string
   isDeletePending: boolean
   onDeleteClick: () => void
+  onPlayClick: () => void
 }
 
 const AlbumCardOverlay = ({
@@ -13,6 +14,7 @@ const AlbumCardOverlay = ({
   albumName,
   isDeletePending,
   onDeleteClick,
+  onPlayClick,
 }: AlbumCardOverlayProps) => {
   return (
     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 pointer-events-none">
@@ -43,7 +45,7 @@ const AlbumCardOverlay = ({
 
       <div className="flex items-end justify-between gap-2">
         <AlbumInfo artistName={artistName} albumName={albumName} />
-        <MusicPlayButton ariaLabel="미리듣기 재생" />
+        <MusicPlayButton ariaLabel="미리듣기 재생" onClick={onPlayClick} />
       </div>
     </div>
   )

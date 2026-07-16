@@ -1,6 +1,8 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { Collection } from '../../types'
 import useDeleteCollection from '../../hooks/useDeleteCollection'
+import useAlbumPreview from '../../hooks/useAlbumPreview'
+import { usePlayer } from '../../hooks/usePlayer'
 import DeleteConfirmModal from './DeleteConfirmModal'
 import AlbumCardOverlay from './AlbumCardOverlay'
 import AlbumDetailModal from '../AlbumDetailModal'
@@ -16,6 +18,13 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
   const [cardRect, setCardRect] = useState<DOMRect | null>(null)
   const coverButtonRef = useRef<HTMLButtonElement>(null)
   const { deleteCollection, isPending } = useDeleteCollection(onError)
+  const { play } = usePlayer()
+  const [isPreviewEnabled, setIsPreviewEnabled] = useState(false)
+  const { previewUrl, isLoading: isPreviewLoading } = useAlbumPreview(
+    album.artist_name,
+    album.album_name,
+    isPreviewEnabled,
+  )
 
   const handleConfirm = () => {
     deleteCollection(album.id)
@@ -33,6 +42,30 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
     setIsDetailOpen(false)
     setCardRect(null)
   }
+
+  const handlePlayClick = () => {
+    // 이미 조회된 적 있으면(재클릭) 캐시된 previewUrl을 바로 사용, 아니면 null로 먼저 열고 조회 시작
+    setIsPreviewEnabled(true)
+    play({
+      coverUrl: album.cover_url,
+      albumName: album.album_name,
+      artistName: album.artist_name,
+      previewUrl: isPreviewEnabled ? previewUrl : null,
+    })
+  }
+
+  // previewUrl 조회가 끝나면 Context의 currentAlbum을 실제 previewUrl로 갱신
+  useEffect(() => {
+    if (isPreviewEnabled && !isPreviewLoading) {
+      play({
+        coverUrl: album.cover_url,
+        albumName: album.album_name,
+        artistName: album.artist_name,
+        previewUrl,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previewUrl, isPreviewLoading])
 
   return (
     <div className="album-card-wrapper relative group">
@@ -57,6 +90,7 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
           albumName={album.album_name}
           isDeletePending={isPending}
           onDeleteClick={() => setIsDeleteModalOpen(true)}
+          onPlayClick={handlePlayClick}
         />
       </div>
 
