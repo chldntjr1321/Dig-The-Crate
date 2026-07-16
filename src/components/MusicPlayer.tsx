@@ -63,6 +63,12 @@ const MusicPlayer = () => {
     togglePlay()
   }
 
+  const handleRestart = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0
+    }
+  }
+
   return (
     <div
       onAnimationEnd={handleAnimationEnd}
@@ -102,7 +108,11 @@ const MusicPlayer = () => {
 
       {/* 컨트롤러 */}
       <div className="flex items-center justify-center gap-4">
-        <button className="text-secondary hover:text-primary cursor-pointer" aria-label="이전 곡">
+        <button
+          onClick={handleRestart}
+          className="text-secondary hover:text-primary cursor-pointer"
+          aria-label="처음부터 재생"
+        >
           <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
             <rect x="0" y="0" width="1.5" height="10" fill="currentColor" />
             <path d="M9 1L2 5L9 9Z" fill="currentColor" />
