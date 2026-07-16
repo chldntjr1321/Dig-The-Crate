@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
-import { type SortOption, SORT_LABELS } from '../../types'
+import { type CollectionSortOption, SORT_LABELS } from '../../types'
 
 interface SortDropdownProps {
-  value: SortOption
-  onChange: (value: SortOption) => void
+  value: CollectionSortOption
+  onChange: (value: CollectionSortOption) => void
 }
 
 const SortDropdown = ({ value, onChange }: SortDropdownProps) => {
@@ -54,7 +54,7 @@ const SortDropdown = ({ value, onChange }: SortDropdownProps) => {
           role="listbox"
           className="absolute top-full right-0 mt-1 bg-card border border-border rounded-lg overflow-hidden z-10 w-44"
         >
-          {(Object.keys(SORT_LABELS) as SortOption[]).map((option) => (
+          {(Object.keys(SORT_LABELS) as CollectionSortOption[]).map((option) => (
             <li key={option} role="option" aria-selected={value === option}>
               <button
                 onClick={() => {

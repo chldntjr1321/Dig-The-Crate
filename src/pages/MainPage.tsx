@@ -5,7 +5,7 @@ import CollectionSkeleton from '../components/collection/CollectionSkeleton'
 import EmptyCollection from '../components/collection/EmptyCollection'
 import CollectionHeader from '../components/collection/CollectionHeader'
 import Toast from '../components/ui/Toast'
-import { type SortOption } from '../types'
+import { type CollectionSortOption } from '../types'
 import useCollections from '../hooks/useCollections'
 import useAuth from '../hooks/useAuth'
 import useDelayedLoading from '../hooks/useDelayedLoading'
@@ -13,7 +13,7 @@ import useDelayedLoading from '../hooks/useDelayedLoading'
 const MainPage = () => {
   const { user } = useAuth()
   const nickname = user?.user_metadata?.nickname ?? ''
-  const [sortBy, setSortBy] = useState<SortOption>('recently_added')
+  const [sortBy, setSortBy] = useState<CollectionSortOption>('recently_added')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   const { collections, isLoading } = useCollections(sortBy)

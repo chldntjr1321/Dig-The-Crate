@@ -1,8 +1,8 @@
-import { type Collection, type SortOption } from '../types'
+import { type Collection, type CollectionSortOption } from '../types'
 
 export const sortCollections = (
   collections: Collection[],
-  sortBy: SortOption,
+  sortBy: CollectionSortOption,
 ): Collection[] => {
   return [...collections].sort((a, b) => {
     switch (sortBy) {

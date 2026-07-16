@@ -1,11 +1,11 @@
 import SortDropdown from './SortDropdown'
-import { type SortOption } from '../../types'
+import { type CollectionSortOption } from '../../types'
 
 interface CollectionHeaderProps {
   nickname: string
   count: number
-  sortBy: SortOption
-  onSortChange: (value: SortOption) => void
+  sortBy: CollectionSortOption
+  onSortChange: (value: CollectionSortOption) => void
 }
 
 const CollectionHeader = ({ nickname, count, sortBy, onSortChange }: CollectionHeaderProps) => {

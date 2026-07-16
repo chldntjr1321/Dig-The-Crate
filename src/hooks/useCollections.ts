@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { getCollections } from '../services/collections'
-import { type SortOption } from '../types'
+import { type CollectionSortOption } from '../types'
 import { sortCollections } from '../utils/sortCollections'
 import useAuth from './useAuth'
 
-const useCollections = (sortBy: SortOption) => {
+const useCollections = (sortBy: CollectionSortOption) => {
   const { user, loading } = useAuth()
 
   const { data, isPending, isError } = useQuery({

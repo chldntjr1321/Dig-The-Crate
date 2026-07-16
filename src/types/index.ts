@@ -1,6 +1,6 @@
-export type SortOption = 'recently_added' | 'artist_name' | 'album_name' | 'release_year'
+export type CollectionSortOption = 'recently_added' | 'artist_name' | 'album_name' | 'release_year'
 
-export const SORT_LABELS: Record<SortOption, string> = {
+export const SORT_LABELS: Record<CollectionSortOption, string> = {
   recently_added: 'Recently Added',
   artist_name: 'Artist Name',
   album_name: 'Album Name',
