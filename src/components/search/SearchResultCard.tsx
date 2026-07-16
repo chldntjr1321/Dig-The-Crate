@@ -4,7 +4,7 @@ import useReleaseDetail from '@/hooks/useReleaseDetail'
 import useAddCollection from '@/hooks/useAddCollection'
 import useDeleteCollection from '@/hooks/useDeleteCollection'
 import CloseIcon from '@/components/ui/CloseIcon'
-import TrackList from './TrackList'
+import TrackList from '@/components/ui/TrackList'
 
 const MODAL_WIDTH = 480
 
