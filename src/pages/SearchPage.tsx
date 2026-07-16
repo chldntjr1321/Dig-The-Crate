@@ -14,8 +14,7 @@ import type { Genre, SearchSortOption } from '../types'
 const SearchPage = () => {
   const [query, setQuery] = useState<string>('')
   const [selectedGenre, setSelectedGenre] = useState<Genre>('All')
-  // TODO(#49): 다음 단계에서 정렬 드롭다운 UI와 함께 useState로 교체
-  const searchSortBy: SearchSortOption = 'relevance'
+  const [searchSortBy, setSearchSortBy] = useState<SearchSortOption>('relevance')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const scrollContainerRef = useRef<HTMLElement>(null)
 
@@ -119,6 +118,8 @@ const SearchPage = () => {
                   hasSearched={true}
                   selectedGenre={selectedGenre}
                   onGenreSelect={setSelectedGenre}
+                  sortBy={searchSortBy}
+                  onSortChange={setSearchSortBy}
                   hasNextPage={hasNextPage}
                   isFetchingNextPage={isFetchingNextPage}
                   nextPageErrorMessage={nextPageErrorMessage}

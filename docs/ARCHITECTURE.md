@@ -22,7 +22,8 @@ src/
 │   │   ├── Button.tsx
 │   │   ├── LoadingSpinner.tsx
 │   │   ├── Modal.tsx
-│   │   └── SkeletonBox.tsx
+│   │   ├── SkeletonBox.tsx
+│   │   └── SortDropdown.tsx       # 컬렉션/검색 공용 (제네릭 + theme prop)
 │   ├── Header.tsx
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
@@ -35,11 +36,10 @@ src/
 │   │   ├── CollectionHeader.tsx
 │   │   ├── CollectionSkeleton.tsx
 │   │   ├── DeleteConfirmModal.tsx
-│   │   ├── EmptyCollection.tsx
-│   │   └── SortDropdown.tsx
+│   │   └── EmptyCollection.tsx
 │   └── search/
 │       ├── SearchInput.tsx
-│       ├── SearchResultList.tsx   # 미구현
+│       ├── SearchResultList.tsx
 │       └── SearchResultCard.tsx
 ├── pages/
 │   ├── AuthPage.tsx
@@ -49,7 +49,7 @@ src/
 │   └── index.ts
 ├── utils/
 │   ├── cn.ts
-│   └── sortCollections.ts
+│   └── sortItems.ts
 ├── router.tsx
 ├── App.tsx
 └── main.tsx

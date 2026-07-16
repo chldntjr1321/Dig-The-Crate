@@ -1,19 +1,19 @@
 export type CollectionSortOption = 'recently_added' | 'artist_name' | 'album_name' | 'release_year'
 
 export const SORT_LABELS: Record<CollectionSortOption, string> = {
-  recently_added: 'Recently Added',
-  artist_name: 'Artist Name',
-  album_name: 'Album Name',
-  release_year: 'Release Year',
+  recently_added: '최근 추가순',
+  artist_name: '아티스트명순',
+  album_name: '앨범명순',
+  release_year: '발매 연도순',
 }
 
-export type SearchSortOption = 'relevance' | 'release_year' | 'album_name' | 'artist_name'
+export type SearchSortOption = 'relevance' | 'artist_name' | 'album_name' | 'release_year'
 
 export const SEARCH_SORT_LABELS: Record<SearchSortOption, string> = {
   relevance: '관련도순',
-  release_year: '발매 연도순',
-  album_name: '앨범명순',
   artist_name: '아티스트명순',
+  album_name: '앨범명순',
+  release_year: '발매 연도순',
 }
 
 // Discogs는 R&B를 별도 장르로 두지 않고 'Funk / Soul'로 분류하므로,

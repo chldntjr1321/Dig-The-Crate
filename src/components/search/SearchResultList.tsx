@@ -1,5 +1,6 @@
-import type { Genre, SearchResult } from '@/types'
+import { type Genre, type SearchResult, type SearchSortOption, SEARCH_SORT_LABELS } from '@/types'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
+import SortDropdown from '@/components/ui/SortDropdown'
 import GenreTabs from './GenreTabs'
 import SearchResultCard from './SearchResultCard'
 
@@ -10,6 +11,8 @@ interface SearchResultListProps {
   hasSearched: boolean
   selectedGenre: Genre
   onGenreSelect: (genre: Genre) => void
+  sortBy: SearchSortOption
+  onSortChange: (value: SearchSortOption) => void
   hasNextPage: boolean
   isFetchingNextPage: boolean
   nextPageErrorMessage: string | null
@@ -23,6 +26,8 @@ const SearchResultList = ({
   hasSearched,
   selectedGenre,
   onGenreSelect,
+  sortBy,
+  onSortChange,
   hasNextPage,
   isFetchingNextPage,
   nextPageErrorMessage,
@@ -40,9 +45,17 @@ const SearchResultList = ({
 
   return (
     <section className="flex flex-col gap-6">
-      <p className="text-xs font-medium text-search-secondary tracking-widest">
-        RESULTS <span className="text-accent">({results.length})</span>
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-medium text-search-secondary tracking-widest">
+          RESULTS <span className="text-accent">({results.length})</span>
+        </p>
+        <SortDropdown
+          value={sortBy}
+          onChange={onSortChange}
+          labels={SEARCH_SORT_LABELS}
+          theme="light"
+        />
+      </div>
       <GenreTabs selected={selectedGenre} onSelect={onGenreSelect} />
       {results.length === 0 ? (
         <p className="text-search-secondary text-sm text-center py-16">
