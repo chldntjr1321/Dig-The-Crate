@@ -43,7 +43,7 @@ const AlbumCardOverlay = ({
 
       <div className="flex items-end justify-between gap-2">
         <AlbumInfo artistName={artistName} albumName={albumName} />
-        <MusicPlayButton />
+        <MusicPlayButton ariaLabel="미리듣기 재생" />
       </div>
     </div>
   )

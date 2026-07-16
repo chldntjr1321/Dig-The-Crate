@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Header from '../components/Header'
+import MusicPlayer from '../components/MusicPlayer'
 import AlbumCard from '../components/collection/AlbumCard'
 import CollectionSkeleton from '../components/collection/CollectionSkeleton'
 import EmptyCollection from '../components/collection/EmptyCollection'
@@ -68,6 +69,14 @@ const MainPage = () => {
 
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      )}
+
+      {/* 목업 확인용 — 3단계에서 재생 버튼 클릭과 연결 예정 */}
+      {collections[0] && (
+        <MusicPlayer
+          coverUrl={collections[0].cover_url}
+          albumName={collections[0].album_name}
+        />
       )}
     </div>
   )

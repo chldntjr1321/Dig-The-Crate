@@ -27,6 +27,7 @@ src/
 │   │   └── TrackList.tsx          # 컬렉션/검색 공용
 │   ├── AlbumDetailModal.tsx       # 컬렉션/검색 공용 앨범 상세(트랙리스트) 모달
 │   ├── Header.tsx
+│   ├── MusicPlayer.tsx            # 좌하단 고정 미니 플레이어 (Phase 2)
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
 │   │   ├── AuthInput.tsx
@@ -41,7 +42,7 @@ src/
 │   │   ├── CollectionSkeleton.tsx
 │   │   ├── DeleteConfirmModal.tsx
 │   │   ├── EmptyCollection.tsx
-│   │   └── MusicPlayButton.tsx
+│   │   └── MusicPlayButton.tsx    # AlbumCardOverlay + MusicPlayer 공용 (size prop)
 │   └── search/
 │       ├── SearchInput.tsx
 │       ├── SearchResultList.tsx

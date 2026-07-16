@@ -1,12 +1,24 @@
-const MusicPlayButton = () => {
+interface MusicPlayButtonProps {
+  ariaLabel: string
+  size?: 'sm' | 'md'
+}
+
+const SIZE_MAP: Record<'sm' | 'md', { button: string; icon: number }> = {
+  sm: { button: 'w-8 h-8', icon: 12 },
+  md: { button: 'w-10 h-10', icon: 16 },
+}
+
+const MusicPlayButton = ({ ariaLabel, size = 'md' }: MusicPlayButtonProps) => {
+  const { button, icon } = SIZE_MAP[size]
+
   return (
     <button
-      className="pointer-events-auto shrink-0 w-10 h-10 rounded-full bg-accent hover:brightness-75 flex items-center justify-center cursor-pointer"
-      aria-label="미리듣기 재생"
+      className={`pointer-events-auto shrink-0 ${button} rounded-full bg-accent hover:brightness-75 flex items-center justify-center cursor-pointer`}
+      aria-label={ariaLabel}
     >
       <svg
-        width="16"
-        height="16"
+        width={icon}
+        height={icon}
         viewBox="0 0 10 10"
         aria-hidden="true"
         className="text-white"

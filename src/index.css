@@ -36,9 +36,19 @@
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
+
+  /* 미니 플레이어 곡 제목 좌측 무한 스크롤 */
+  .marquee-track {
+    animation: marquee 8s linear infinite;
+  }
 }
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
