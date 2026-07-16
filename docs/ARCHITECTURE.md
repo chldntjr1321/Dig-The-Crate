@@ -35,10 +35,13 @@ src/
 │   │   └── SignupForm.tsx
 │   ├── collection/
 │   │   ├── AlbumCard.tsx
+│   │   ├── AlbumCardOverlay.tsx    # 호버 시 dimmed 배경 + X버튼 + AlbumInfo
+│   │   ├── AlbumInfo.tsx           # 아티스트/앨범명 텍스트 + 재생 버튼 한 줄
 │   │   ├── CollectionHeader.tsx
 │   │   ├── CollectionSkeleton.tsx
 │   │   ├── DeleteConfirmModal.tsx
-│   │   └── EmptyCollection.tsx
+│   │   ├── EmptyCollection.tsx
+│   │   └── MusicPlayButton.tsx
 │   └── search/
 │       ├── SearchInput.tsx
 │       ├── SearchResultList.tsx
