@@ -1,18 +1,34 @@
-import { useState, type AnimationEvent } from 'react'
+import { useEffect, useRef, useState, type AnimationEvent } from 'react'
 import MusicPlayButton from './collection/MusicPlayButton'
 import CloseIcon from './ui/CloseIcon'
 import { usePlayer } from '../hooks/usePlayer'
 
 const MusicPlayer = () => {
-  const { currentAlbum, closePlayer } = usePlayer()
+  const { currentAlbum, closePlayer, isPlaying, togglePlay } = usePlayer()
   const [isClosing, setIsClosing] = useState(false)
   const [trackedAlbum, setTrackedAlbum] = useState(currentAlbum)
+  const [progress, setProgress] = useState(0)
+  const audioRef = useRef<HTMLAudioElement>(null)
 
-  // 새 앨범이 재생되면(currentAlbum이 바뀌면) 닫힘 애니메이션 상태를 리셋
+  // 새 앨범이 재생되면(currentAlbum이 바뀌면) 닫힘 애니메이션 상태와 진행바를 리셋
   if (currentAlbum !== trackedAlbum) {
     setTrackedAlbum(currentAlbum)
     setIsClosing(false)
+    setProgress(0)
   }
+
+  // isPlaying/previewUrl에 맞춰 실제 <audio> 재생 상태 동기화
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !currentAlbum?.previewUrl) {
+      return
+    }
+    if (isPlaying) {
+      audio.play().catch(() => {})
+    } else {
+      audio.pause()
+    }
+  }, [isPlaying, currentAlbum?.previewUrl])
 
   if (!currentAlbum) {
     return null
@@ -29,6 +45,22 @@ const MusicPlayer = () => {
     if (e.animationName === 'player-slide-down') {
       closePlayer()
     }
+  }
+
+  const handleTimeUpdate = () => {
+    const audio = audioRef.current
+    if (!audio || !audio.duration) {
+      return
+    }
+    setProgress((audio.currentTime / audio.duration) * 100)
+  }
+
+  // 재생이 끝나면 재생 위치를 처음으로 되돌려서, 다시 눌렀을 때 처음부터 재생되게 함
+  const handleEnded = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0
+    }
+    togglePlay()
   }
 
   return (
@@ -63,9 +95,9 @@ const MusicPlayer = () => {
         </div>
       </div>
 
-      {/* 진행바 (목업 — 실제 재생 위치 연동은 이후 단계) */}
+      {/* 진행바 — 30초 미리듣기 재생 위치에 맞춰 갱신 */}
       <div className="h-1 w-full rounded-full bg-border overflow-hidden mt-1">
-        <div className="h-full w-1/3 bg-accent" />
+        <div className="h-full bg-accent" style={{ width: `${progress}%` }} />
       </div>
 
       {/* 컨트롤러 */}
@@ -77,7 +109,13 @@ const MusicPlayer = () => {
           </svg>
         </button>
 
-        <MusicPlayButton ariaLabel="재생/일시정지" size="sm" />
+        <MusicPlayButton
+          ariaLabel="재생/일시정지"
+          size="sm"
+          onClick={togglePlay}
+          disabled={!currentAlbum.previewUrl}
+          isPlaying={isPlaying}
+        />
 
         <button className="text-secondary hover:text-primary cursor-pointer" aria-label="다음 곡">
           <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
@@ -86,6 +124,14 @@ const MusicPlayer = () => {
           </svg>
         </button>
       </div>
+
+      <audio
+        ref={audioRef}
+        src={currentAlbum.previewUrl ?? undefined}
+        onEnded={handleEnded}
+        onTimeUpdate={handleTimeUpdate}
+        className="hidden"
+      />
     </div>
   )
 }
