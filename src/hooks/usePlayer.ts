@@ -12,6 +12,7 @@ export interface PlayerContextValue {
   isPlaying: boolean
   play: (album: PlayingAlbum) => void
   togglePlay: () => void
+  closePlayer: () => void
 }
 
 export const PlayerContext = createContext<PlayerContextValue | null>(null)

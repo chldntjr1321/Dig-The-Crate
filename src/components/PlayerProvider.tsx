@@ -14,8 +14,13 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     setIsPlaying((prev) => !prev)
   }
 
+  const closePlayer = () => {
+    setCurrentAlbum(null)
+    setIsPlaying(false)
+  }
+
   return (
-    <PlayerContext value={{ currentAlbum, isPlaying, play, togglePlay }}>
+    <PlayerContext value={{ currentAlbum, isPlaying, play, togglePlay, closePlayer }}>
       {children}
     </PlayerContext>
   )

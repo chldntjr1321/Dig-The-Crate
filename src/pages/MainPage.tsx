@@ -71,13 +71,7 @@ const MainPage = () => {
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
 
-      {/* 목업 확인용 — 3단계에서 재생 버튼 클릭과 연결 예정 */}
-      {collections[0] && (
-        <MusicPlayer
-          coverUrl={collections[0].cover_url}
-          albumName={collections[0].album_name}
-        />
-      )}
+      <MusicPlayer />
     </div>
   )
 }

@@ -41,6 +41,16 @@
   .marquee-track {
     animation: marquee 8s linear infinite;
   }
+
+  /* 미니 플레이어 등장 */
+  .player-enter {
+    animation: player-slide-up 0.3s ease;
+  }
+
+  /* 미니 플레이어 닫힘 */
+  .player-exit {
+    animation: player-slide-down 0.3s ease forwards;
+  }
 }
 
 @keyframes shimmer {
@@ -51,4 +61,14 @@
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+@keyframes player-slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes player-slide-down {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
 }
