@@ -51,6 +51,11 @@
   .player-exit {
     animation: player-slide-down 0.3s ease forwards;
   }
+
+  /* LP 회전 — CSS animation 방식 (컴포지터 스레드 처리, JS setInterval 방식에서 전환) */
+  .lp-spin {
+    animation: lp-spin 3s linear infinite;
+  }
 }
 
 @keyframes shimmer {
@@ -71,4 +76,9 @@
 @keyframes player-slide-down {
   from { transform: translateY(0); opacity: 1; }
   to { transform: translateY(100%); opacity: 0; }
+}
+
+@keyframes lp-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

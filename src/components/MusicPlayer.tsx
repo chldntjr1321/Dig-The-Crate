@@ -15,7 +15,6 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
   const [isClosing, setIsClosing] = useState(false)
   const [trackedAlbum, setTrackedAlbum] = useState(currentAlbum)
   const [progress, setProgress] = useState(0)
-  const [rotation, setRotation] = useState(0)
   // 스크롤로 숨겨진 상태에서 새 앨범을 재생하면, 다음 스크롤 변화가 있기 전까지 강제로 보여줌
   const [scrollHideOverride, setScrollHideOverride] = useState(false)
   const [trackedHiddenByScroll, setTrackedHiddenByScroll] = useState(hiddenByScroll)
@@ -53,18 +52,6 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
     } else {
       audio.pause()
     }
-  }, [isPlaying, currentAlbum?.previewUrl])
-
-  // LP 회전 애니메이션 — JS setInterval 방식 1차 구현 (메인 스레드 점유, before 성능 측정용)
-  // 로딩 중/재생 불가 상태에서는 돌지 않도록 previewUrl이 있을 때만 회전
-  useEffect(() => {
-    if (!isPlaying || !currentAlbum?.previewUrl) {
-      return
-    }
-    const interval = setInterval(() => {
-      setRotation((prev) => (prev + 6) % 360)
-    }, 50)
-    return () => clearInterval(interval)
   }, [isPlaying, currentAlbum?.previewUrl])
 
   if (!currentAlbum) {
@@ -130,8 +117,8 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
           <img
             src={coverUrl}
             alt={`${albumName} 커버`}
-            className="w-12 h-12 rounded-full object-cover"
-            style={{ transform: `rotate(${rotation}deg)` }}
+            className={`w-12 h-12 rounded-full object-cover ${currentAlbum.previewUrl ? 'lp-spin' : ''}`}
+            style={{ animationPlayState: isPlaying ? 'running' : 'paused' }}
           />
           {/* 미리듣기 조회 중 — 커버 위에 뿌옇게 오버레이 */}
           {currentAlbum.isPreviewLoading && (
