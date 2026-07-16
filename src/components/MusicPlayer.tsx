@@ -8,6 +8,7 @@ const MusicPlayer = () => {
   const [isClosing, setIsClosing] = useState(false)
   const [trackedAlbum, setTrackedAlbum] = useState(currentAlbum)
   const [progress, setProgress] = useState(0)
+  const [rotation, setRotation] = useState(0)
   const audioRef = useRef<HTMLAudioElement>(null)
 
   // 새 앨범이 재생되면(currentAlbum이 바뀌면) 닫힘 애니메이션 상태와 진행바를 리셋
@@ -29,6 +30,17 @@ const MusicPlayer = () => {
       audio.pause()
     }
   }, [isPlaying, currentAlbum?.previewUrl])
+
+  // LP 회전 애니메이션 — JS setInterval 방식 1차 구현 (메인 스레드 점유, before 성능 측정용)
+  useEffect(() => {
+    if (!isPlaying) {
+      return
+    }
+    const interval = setInterval(() => {
+      setRotation((prev) => (prev + 6) % 360)
+    }, 50)
+    return () => clearInterval(interval)
+  }, [isPlaying])
 
   if (!currentAlbum) {
     return null
@@ -87,6 +99,7 @@ const MusicPlayer = () => {
           src={coverUrl}
           alt={`${albumName} 커버`}
           className="w-12 h-12 rounded-full object-cover shrink-0"
+          style={{ transform: `rotate(${rotation}deg)` }}
         />
         <div className="min-w-0 pr-4">
           <p className="text-muted text-[10px] uppercase tracking-wider">Now Playing</p>
