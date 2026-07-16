@@ -36,9 +36,49 @@
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
+
+  /* 미니 플레이어 곡 제목 좌측 무한 스크롤 */
+  .marquee-track {
+    animation: marquee 8s linear infinite;
+  }
+
+  /* 미니 플레이어 등장 */
+  .player-enter {
+    animation: player-slide-up 0.3s ease;
+  }
+
+  /* 미니 플레이어 닫힘 */
+  .player-exit {
+    animation: player-slide-down 0.3s ease forwards;
+  }
+
+  /* LP 회전 — CSS animation 방식 (컴포지터 스레드 처리, JS setInterval 방식에서 전환) */
+  .lp-spin {
+    animation: lp-spin 3s linear infinite;
+  }
 }
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes player-slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes player-slide-down {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(100%); opacity: 0; }
+}
+
+@keyframes lp-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

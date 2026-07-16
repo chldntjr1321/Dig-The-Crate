@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Header from '../components/Header'
+import MusicPlayer from '../components/MusicPlayer'
 import AlbumCard from '../components/collection/AlbumCard'
 import CollectionSkeleton from '../components/collection/CollectionSkeleton'
 import EmptyCollection from '../components/collection/EmptyCollection'
@@ -15,15 +16,34 @@ const MainPage = () => {
   const nickname = user?.user_metadata?.nickname ?? ''
   const [sortBy, setSortBy] = useState<CollectionSortOption>('recently_added')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [isNearBottom, setIsNearBottom] = useState(false)
+  const mainRef = useRef<HTMLElement>(null)
 
   const { collections, isLoading } = useCollections(sortBy)
   const showSkeleton = useDelayedLoading(isLoading)
+
+  // 스크롤이 바닥에서 이 값(px) 이내로 남으면 미니 플레이어를 숨김
+  const BOTTOM_THRESHOLD_PX = 5
+
+  useEffect(() => {
+    const main = mainRef.current
+    if (!main) {
+      return
+    }
+    const handleScroll = () => {
+      const distanceFromBottom = main.scrollHeight - main.scrollTop - main.clientHeight
+      setIsNearBottom(distanceFromBottom <= BOTTOM_THRESHOLD_PX)
+    }
+    handleScroll()
+    main.addEventListener('scroll', handleScroll, { passive: true })
+    return () => main.removeEventListener('scroll', handleScroll)
+  }, [collections.length, showSkeleton])
 
   return (
     <div className="bg-page relative flex flex-col h-screen">
       <Header />
 
-      <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable] relative">
+      <main ref={mainRef} className="flex-1 overflow-y-auto [scrollbar-gutter:stable] relative">
         {isLoading && !showSkeleton ? null : collections.length === 0 && !isLoading ? (
           <>
             <div
@@ -69,6 +89,8 @@ const MainPage = () => {
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
+
+      <MusicPlayer hiddenByScroll={isNearBottom} />
     </div>
   )
 }

@@ -16,7 +16,8 @@ src/
 │   ├── useDelayedLoading.ts
 │   ├── useAddCollection.ts    # 미구현
 │   ├── useDeleteCollection.ts # 미구현
-│   └── useDiscogsSearch.ts    # 미구현
+│   ├── useDiscogsSearch.ts    # 미구현
+│   └── usePlayer.ts           # PlayerContext 정의 + 훅 (Phase 2)
 ├── components/
 │   ├── ui/
 │   │   ├── Button.tsx
@@ -27,6 +28,8 @@ src/
 │   │   └── TrackList.tsx          # 컬렉션/검색 공용
 │   ├── AlbumDetailModal.tsx       # 컬렉션/검색 공용 앨범 상세(트랙리스트) 모달
 │   ├── Header.tsx
+│   ├── MusicPlayer.tsx            # 좌하단 고정 미니 플레이어 (Phase 2)
+│   ├── PlayerProvider.tsx         # 재생 상태 전역 Context (Phase 2)
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
 │   │   ├── AuthInput.tsx
@@ -35,10 +38,13 @@ src/
 │   │   └── SignupForm.tsx
 │   ├── collection/
 │   │   ├── AlbumCard.tsx
+│   │   ├── AlbumCardOverlay.tsx    # 호버 시 dimmed 배경 + X버튼 + AlbumInfo
+│   │   ├── AlbumInfo.tsx           # 아티스트/앨범명 텍스트 + 재생 버튼 한 줄
 │   │   ├── CollectionHeader.tsx
 │   │   ├── CollectionSkeleton.tsx
 │   │   ├── DeleteConfirmModal.tsx
-│   │   └── EmptyCollection.tsx
+│   │   ├── EmptyCollection.tsx
+│   │   └── MusicPlayButton.tsx    # AlbumCardOverlay + MusicPlayer 공용 (size prop)
 │   └── search/
 │       ├── SearchInput.tsx
 │       ├── SearchResultList.tsx

@@ -1,7 +1,10 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { Collection } from '../../types'
 import useDeleteCollection from '../../hooks/useDeleteCollection'
+import useAlbumPreview from '../../hooks/useAlbumPreview'
+import { usePlayer } from '../../hooks/usePlayer'
 import DeleteConfirmModal from './DeleteConfirmModal'
+import AlbumCardOverlay from './AlbumCardOverlay'
 import AlbumDetailModal from '../AlbumDetailModal'
 
 interface AlbumCardProps {
@@ -15,6 +18,13 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
   const [cardRect, setCardRect] = useState<DOMRect | null>(null)
   const coverButtonRef = useRef<HTMLButtonElement>(null)
   const { deleteCollection, isPending } = useDeleteCollection(onError)
+  const { play, notifyPlaybackError } = usePlayer()
+  const [isPreviewEnabled, setIsPreviewEnabled] = useState(false)
+  const { previewUrl, isLoading: isPreviewLoading } = useAlbumPreview(
+    album.artist_name,
+    album.album_name,
+    isPreviewEnabled,
+  )
 
   const handleConfirm = () => {
     deleteCollection(album.id)
@@ -33,61 +43,66 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
     setCardRect(null)
   }
 
+  const handlePlayClick = () => {
+    // 처음 클릭이면 조회를 시작하고 로딩 상태로 먼저 미니 플레이어를 띄움
+    // 이미 조회된 적 있으면(재클릭) 캐시된 결과를 바로 반영
+    const isKnownFailure = isPreviewEnabled && !isPreviewLoading && !previewUrl
+    setIsPreviewEnabled(true)
+    play({
+      coverUrl: album.cover_url,
+      albumName: album.album_name,
+      artistName: album.artist_name,
+      previewUrl: isPreviewEnabled ? previewUrl : null,
+      isPreviewLoading: isPreviewEnabled ? isPreviewLoading : true,
+    })
+    if (isKnownFailure) {
+      notifyPlaybackError('재생할 수 없습니다.')
+    }
+  }
+
+  // previewUrl 조회가 끝나면 Context의 currentAlbum을 실제 결과로 갱신
+  useEffect(() => {
+    if (isPreviewEnabled && !isPreviewLoading) {
+      play({
+        coverUrl: album.cover_url,
+        albumName: album.album_name,
+        artistName: album.artist_name,
+        previewUrl,
+        isPreviewLoading: false,
+      })
+      if (!previewUrl) {
+        notifyPlaybackError('재생할 수 없습니다.')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [previewUrl, isPreviewLoading])
+
   return (
     <div className="album-card-wrapper relative group">
-      {/* 앨범 커버 */}
-      <button
-        ref={coverButtonRef}
-        onClick={handleOpenDetail}
-        className="album-card relative aspect-square w-full overflow-hidden bg-page shadow-[0_12px_24px_rgba(0,0,0,0.4)] cursor-pointer"
-        aria-label={`${album.album_name} 상세 보기`}
-      >
-        <img
-          src={album.cover_url}
-          alt={`${album.album_name} - ${album.artist_name}`}
-          className="w-full h-full object-cover"
-        />
-
-        {/* 호버 오버레이 */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
-          {/* X 버튼(형제 요소)이 이 자리를 차지하므로 레이아웃 유지를 위한 spacer */}
-          <div />
-
-          {/* 하단 텍스트 */}
-          <div>
-            <p className="text-secondary text-[12px] font-medium uppercase tracking-wider mb-1 truncate">
-              {album.artist_name}
-            </p>
-            <p className="text-primary text-[14px] font-semibold truncate">
-              {album.album_name}
-            </p>
-          </div>
-        </div>
-      </button>
-
-      {/* X 버튼 (상단 우측) — 커버 버튼과 형제 요소로 분리해 버튼 중첩을 피함 */}
-      <button
-        onClick={() => setIsDeleteModalOpen(true)}
-        disabled={isPending}
-        className="group/btn absolute top-4 right-4 w-7 h-7 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer disabled:cursor-not-allowed"
-        aria-label="앨범 삭제"
-      >
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 10 10"
-          fill="none"
-          aria-hidden="true"
-          className="text-white group-hover/btn:text-accent transition-colors"
+      {/* 커버 + 오버레이를 감싸는 별도 relative 컨테이너 — 메탈 라인 등 바깥 요소 높이가 섞이지 않도록 커버 크기에 정확히 맞춤 */}
+      <div className="album-card relative aspect-square w-full overflow-hidden rounded-sm bg-page shadow-[0_12px_24px_rgba(0,0,0,0.4)]">
+        <button
+          ref={coverButtonRef}
+          onClick={handleOpenDetail}
+          className="absolute inset-0 w-full h-full cursor-pointer"
+          aria-label={`${album.album_name} 상세 보기`}
         >
-          <path
-            d="M1 1L9 9M9 1L1 9"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
+          <img
+            src={album.cover_url}
+            alt={`${album.album_name} - ${album.artist_name}`}
+            className="w-full h-full object-cover"
           />
-        </svg>
-      </button>
+        </button>
+
+        {/* 호버 오버레이 — 커버 버튼과 형제 요소로 분리(X/재생 버튼이 커버 <button> 안에 중첩되지 않도록) */}
+        <AlbumCardOverlay
+          artistName={album.artist_name}
+          albumName={album.album_name}
+          isDeletePending={isPending}
+          onDeleteClick={() => setIsDeleteModalOpen(true)}
+          onPlayClick={handlePlayClick}
+        />
+      </div>
 
       {/* 받침대 메탈 라인 — 카드보다 좌우 8px씩 더 길게 */}
       <div className="mt-1 h-0.5 bg-metal group-hover:bg-accent transition-colors duration-300 w-[calc(100%+16px)] -ml-2" />
