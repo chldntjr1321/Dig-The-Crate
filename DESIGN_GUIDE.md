@@ -202,10 +202,10 @@ placeholder: text-search-secondary
 위치: 컬렉션 영역 우측 상단
 스타일: 텍스트 + 화살표 아이콘
 선택지
-- Recently Added (기본)
-- Artist Name
-- Album Name
-- Release Year
+- 최근 추가순 (기본)
+- 아티스트명순
+- 앨범명순
+- 발매 연도순
 ```
 
 ### 미니 플레이어 (Phase 2)

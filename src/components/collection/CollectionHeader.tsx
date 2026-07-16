@@ -1,11 +1,11 @@
-import SortDropdown from './SortDropdown'
-import { type SortOption } from '../../types'
+import SortDropdown from '../ui/SortDropdown'
+import { type CollectionSortOption, SORT_LABELS } from '../../types'
 
 interface CollectionHeaderProps {
   nickname: string
   count: number
-  sortBy: SortOption
-  onSortChange: (value: SortOption) => void
+  sortBy: CollectionSortOption
+  onSortChange: (value: CollectionSortOption) => void
 }
 
 const CollectionHeader = ({ nickname, count, sortBy, onSortChange }: CollectionHeaderProps) => {
@@ -15,7 +15,7 @@ const CollectionHeader = ({ nickname, count, sortBy, onSortChange }: CollectionH
         <span className="text-accent">{nickname}</span>'s 플레이리스트
         <span className="text-secondary text-[14px] font-normal ml-2">({count})</span>
       </p>
-      <SortDropdown value={sortBy} onChange={onSortChange} />
+      <SortDropdown value={sortBy} onChange={onSortChange} labels={SORT_LABELS} />
     </div>
   )
 }
