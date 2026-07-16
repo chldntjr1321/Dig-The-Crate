@@ -16,7 +16,8 @@ src/
 │   ├── useDelayedLoading.ts
 │   ├── useAddCollection.ts    # 미구현
 │   ├── useDeleteCollection.ts # 미구현
-│   └── useDiscogsSearch.ts    # 미구현
+│   ├── useDiscogsSearch.ts    # 미구현
+│   └── usePlayer.ts           # PlayerContext 정의 + 훅 (Phase 2)
 ├── components/
 │   ├── ui/
 │   │   ├── Button.tsx
@@ -28,6 +29,7 @@ src/
 │   ├── AlbumDetailModal.tsx       # 컬렉션/검색 공용 앨범 상세(트랙리스트) 모달
 │   ├── Header.tsx
 │   ├── MusicPlayer.tsx            # 좌하단 고정 미니 플레이어 (Phase 2)
+│   ├── PlayerProvider.tsx         # 재생 상태 전역 Context (Phase 2)
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
 │   │   ├── AuthInput.tsx
