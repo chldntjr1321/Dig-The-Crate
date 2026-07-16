@@ -5,6 +5,7 @@ export interface PlayingAlbum {
   albumName: string
   artistName: string
   previewUrl: string | null
+  isPreviewLoading: boolean
 }
 
 export interface PlayerContextValue {
@@ -13,6 +14,9 @@ export interface PlayerContextValue {
   play: (album: PlayingAlbum) => void
   togglePlay: () => void
   closePlayer: () => void
+  playbackError: string | null
+  notifyPlaybackError: (message: string) => void
+  clearPlaybackError: () => void
 }
 
 export const PlayerContext = createContext<PlayerContextValue | null>(null)

@@ -18,7 +18,7 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
   const [cardRect, setCardRect] = useState<DOMRect | null>(null)
   const coverButtonRef = useRef<HTMLButtonElement>(null)
   const { deleteCollection, isPending } = useDeleteCollection(onError)
-  const { play } = usePlayer()
+  const { play, notifyPlaybackError } = usePlayer()
   const [isPreviewEnabled, setIsPreviewEnabled] = useState(false)
   const { previewUrl, isLoading: isPreviewLoading } = useAlbumPreview(
     album.artist_name,
@@ -44,17 +44,23 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
   }
 
   const handlePlayClick = () => {
-    // 이미 조회된 적 있으면(재클릭) 캐시된 previewUrl을 바로 사용, 아니면 null로 먼저 열고 조회 시작
+    // 처음 클릭이면 조회를 시작하고 로딩 상태로 먼저 미니 플레이어를 띄움
+    // 이미 조회된 적 있으면(재클릭) 캐시된 결과를 바로 반영
+    const isKnownFailure = isPreviewEnabled && !isPreviewLoading && !previewUrl
     setIsPreviewEnabled(true)
     play({
       coverUrl: album.cover_url,
       albumName: album.album_name,
       artistName: album.artist_name,
       previewUrl: isPreviewEnabled ? previewUrl : null,
+      isPreviewLoading: isPreviewEnabled ? isPreviewLoading : true,
     })
+    if (isKnownFailure) {
+      notifyPlaybackError('재생할 수 없습니다.')
+    }
   }
 
-  // previewUrl 조회가 끝나면 Context의 currentAlbum을 실제 previewUrl로 갱신
+  // previewUrl 조회가 끝나면 Context의 currentAlbum을 실제 결과로 갱신
   useEffect(() => {
     if (isPreviewEnabled && !isPreviewLoading) {
       play({
@@ -62,7 +68,11 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
         albumName: album.album_name,
         artistName: album.artist_name,
         previewUrl,
+        isPreviewLoading: false,
       })
+      if (!previewUrl) {
+        notifyPlaybackError('재생할 수 없습니다.')
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [previewUrl, isPreviewLoading])
