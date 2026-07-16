@@ -23,7 +23,9 @@ src/
 │   │   ├── LoadingSpinner.tsx
 │   │   ├── Modal.tsx
 │   │   ├── SkeletonBox.tsx
-│   │   └── SortDropdown.tsx       # 컬렉션/검색 공용 (제네릭 + theme prop)
+│   │   ├── SortDropdown.tsx       # 컬렉션/검색 공용 (제네릭 + theme prop)
+│   │   └── TrackList.tsx          # 컬렉션/검색 공용
+│   ├── AlbumDetailModal.tsx       # 컬렉션/검색 공용 앨범 상세(트랙리스트) 모달
 │   ├── Header.tsx
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
