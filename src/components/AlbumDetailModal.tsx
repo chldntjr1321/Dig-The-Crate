@@ -2,6 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react'
 import type { Track } from '@/types'
 import CloseIcon from '@/components/ui/CloseIcon'
 import TrackList from '@/components/ui/TrackList'
+import useAlbumColor from '@/hooks/useAlbumColor'
 
 const MODAL_WIDTH = 480
 
@@ -27,6 +28,7 @@ const AlbumDetailModal = ({
   footer,
 }: AlbumDetailModalProps) => {
   const [isAnimating, setIsAnimating] = useState(false)
+  const { color } = useAlbumColor(coverUrl)
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -59,6 +61,11 @@ const AlbumDetailModal = ({
           transform: isAnimating ? 'translate(0, 0) scale(1)' : getInitialTransform(),
           transition: 'transform 0.4s ease, opacity 0.4s ease',
           opacity: isAnimating ? 1 : 0,
+          // 앨범 커버에서 추출한 대표색 → 기존 배경(#1C1208, bg-search-primary와 동일)으로 이어지는 그라데이션.
+          // 앨범마다 달라지는 런타임 계산값이라 디자인 토큰으로 표현할 수 없어 하드코딩 색상 금지 규칙의 예외로 둠
+          ...(color && {
+            background: `linear-gradient(180deg, rgb(${color.r}, ${color.g}, ${color.b}) 0%, #1C1208 65%)`,
+          }),
         }}
         onClick={(e) => e.stopPropagation()}
       >
