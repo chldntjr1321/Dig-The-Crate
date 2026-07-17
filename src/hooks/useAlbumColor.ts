@@ -3,7 +3,8 @@ import { extractDominantColor } from '../utils/extractDominantColor'
 import type { RgbColor } from '../types'
 
 // 캔버스에 그릴 최대 한 변 길이(px). 원본이 더 크면 이 크기로 축소해서 연산량을 제한
-const SAMPLE_SIZE = 200
+// 값이 클수록 원본 디테일을 더 많이 보존하지만(더 정확한 색 분석), 픽셀 수가 늘어 연산량도 커짐
+const SAMPLE_SIZE = 500
 
 // Discogs 이미지 CDN이 CORS 허용 헤더를 보내지 않아 캔버스에서 픽셀을 읽을 수 없음.
 // wsrv.nl(무료 공개 이미지 프록시)을 거쳐 access-control-allow-origin 헤더를 붙여서 받아옴.
