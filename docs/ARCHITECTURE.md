@@ -17,7 +17,8 @@ src/
 │   ├── useAddCollection.ts    # 미구현
 │   ├── useDeleteCollection.ts # 미구현
 │   ├── useDiscogsSearch.ts    # 미구현
-│   └── usePlayer.ts           # PlayerContext 정의 + 훅 (Phase 2)
+│   ├── usePlayer.ts           # PlayerContext 정의 + 훅 (Phase 2)
+│   └── useAlbumColor.ts       # 앨범 커버 대표색 추출 훅, 계산은 Worker에 위임 (Phase 2)
 ├── components/
 │   ├── ui/
 │   │   ├── Button.tsx
@@ -57,7 +58,11 @@ src/
 │   └── index.ts
 ├── utils/
 │   ├── cn.ts
-│   └── sortItems.ts
+│   ├── sortItems.ts
+│   ├── extractDominantColor.ts  # Median Cut 알고리즘으로 이미지 대표색 추출 (Phase 2)
+│   └── mutedColor.ts            # 추출된 색의 채도/밝기를 낮춰 텍스트 대비 확보 (Phase 2)
+├── workers/
+│   └── colorExtractor.worker.ts # extractDominantColor를 메인 스레드 밖에서 실행 (Phase 2)
 ├── router.tsx
 ├── App.tsx
 └── main.tsx
