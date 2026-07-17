@@ -1,8 +1,8 @@
 import type { RgbColor } from '../types'
 
 // 재귀 분할 깊이. 2^COLOR_BOX_DEPTH개의 색상 상자로 나뉜다
-// 값이 클수록 더 세밀한 색상 후보군을 얻지만(64개), 재귀/정렬 연산량도 늘어남
-const COLOR_BOX_DEPTH = 6
+// 값이 클수록 더 세밀한 색상 후보군을 얻지만, 재귀/정렬 연산량도 늘어남
+const COLOR_BOX_DEPTH = 14
 
 type RgbTuple = [number, number, number]
 
