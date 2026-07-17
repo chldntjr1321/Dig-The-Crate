@@ -71,10 +71,11 @@ const MainPage = () => {
                     onSortChange={setSortBy}
                   />
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {collections.map((album) => (
+                    {collections.map((album, index) => (
                       <AlbumCard
                         key={album.id}
-                        album={album}
+                        albums={collections}
+                        index={index}
                         onError={setToastMessage}
                       />
                     ))}

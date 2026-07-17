@@ -7,13 +7,13 @@ import AlbumCardOverlay from './AlbumCardOverlay'
 import AlbumDetailModal from '../AlbumDetailModal'
 
 interface AlbumCardProps {
-  album: Collection
   albums: Collection[]
   index: number
   onError: (message: string) => void
 }
 
-const AlbumCard = ({ album, albums, index, onError }: AlbumCardProps) => {
+const AlbumCard = ({ albums, index, onError }: AlbumCardProps) => {
+  const album = albums[index]
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [cardRect, setCardRect] = useState<DOMRect | null>(null)
