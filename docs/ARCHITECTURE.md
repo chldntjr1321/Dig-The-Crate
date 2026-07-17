@@ -16,14 +16,21 @@ src/
 │   ├── useDelayedLoading.ts
 │   ├── useAddCollection.ts    # 미구현
 │   ├── useDeleteCollection.ts # 미구현
-│   └── useDiscogsSearch.ts    # 미구현
+│   ├── useDiscogsSearch.ts    # 미구현
+│   ├── usePlayer.ts           # PlayerContext 정의 + 훅 (Phase 2)
+│   └── useAlbumColor.ts       # 앨범 커버 대표색 추출 훅, 계산은 Worker에 위임 (Phase 2)
 ├── components/
 │   ├── ui/
 │   │   ├── Button.tsx
 │   │   ├── LoadingSpinner.tsx
 │   │   ├── Modal.tsx
-│   │   └── SkeletonBox.tsx
+│   │   ├── SkeletonBox.tsx
+│   │   ├── SortDropdown.tsx       # 컬렉션/검색 공용 (제네릭 + theme prop)
+│   │   └── TrackList.tsx          # 컬렉션/검색 공용
+│   ├── AlbumDetailModal.tsx       # 컬렉션/검색 공용 앨범 상세(트랙리스트) 모달
 │   ├── Header.tsx
+│   ├── MusicPlayer.tsx            # 좌하단 고정 미니 플레이어 (Phase 2)
+│   ├── PlayerProvider.tsx         # 재생 상태 전역 Context (Phase 2)
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
 │   │   ├── AuthInput.tsx
@@ -32,14 +39,16 @@ src/
 │   │   └── SignupForm.tsx
 │   ├── collection/
 │   │   ├── AlbumCard.tsx
+│   │   ├── AlbumCardOverlay.tsx    # 호버 시 dimmed 배경 + X버튼 + AlbumInfo
+│   │   ├── AlbumInfo.tsx           # 아티스트/앨범명 텍스트 + 재생 버튼 한 줄
 │   │   ├── CollectionHeader.tsx
 │   │   ├── CollectionSkeleton.tsx
 │   │   ├── DeleteConfirmModal.tsx
 │   │   ├── EmptyCollection.tsx
-│   │   └── SortDropdown.tsx
+│   │   └── MusicPlayButton.tsx    # AlbumCardOverlay + MusicPlayer 공용 (size prop)
 │   └── search/
 │       ├── SearchInput.tsx
-│       ├── SearchResultList.tsx   # 미구현
+│       ├── SearchResultList.tsx
 │       └── SearchResultCard.tsx
 ├── pages/
 │   ├── AuthPage.tsx
@@ -49,7 +58,11 @@ src/
 │   └── index.ts
 ├── utils/
 │   ├── cn.ts
-│   └── sortCollections.ts
+│   ├── sortItems.ts
+│   ├── extractDominantColor.ts  # Median Cut 알고리즘으로 이미지 대표색 추출 (Phase 2)
+│   └── mutedColor.ts            # 추출된 색의 채도/밝기를 낮춰 텍스트 대비 확보 (Phase 2)
+├── workers/
+│   └── colorExtractor.worker.ts # extractDominantColor를 메인 스레드 밖에서 실행 (Phase 2)
 ├── router.tsx
 ├── App.tsx
 └── main.tsx

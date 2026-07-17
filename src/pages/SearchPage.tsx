@@ -8,11 +8,13 @@ import Toast from '../components/ui/Toast'
 import useDiscogsSearch from '../hooks/useDiscogsSearch'
 import useRecommendations from '../hooks/useRecommendations'
 import useCollections from '../hooks/useCollections'
-import type { Genre } from '../types'
+import { sortItems } from '../utils/sortItems'
+import type { Genre, SearchSortOption } from '../types'
 
 const SearchPage = () => {
   const [query, setQuery] = useState<string>('')
   const [selectedGenre, setSelectedGenre] = useState<Genre>('All')
+  const [searchSortBy, setSearchSortBy] = useState<SearchSortOption>('relevance')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const scrollContainerRef = useRef<HTMLElement>(null)
 
@@ -37,13 +39,13 @@ const SearchPage = () => {
   const isInitialError = errorMessage !== null && !hasResults
   const nextPageErrorMessage = hasResults ? errorMessage : null
 
-  const searchResults = useMemo(
-    () =>
+  const searchResults = useMemo(() => {
+    const genreFiltered =
       selectedGenre === 'All'
         ? results
-        : results.filter((r) => r.genres?.includes(selectedGenre)),
-    [results, selectedGenre],
-  )
+        : results.filter((r) => r.genres?.includes(selectedGenre))
+    return sortItems(genreFiltered, searchSortBy)
+  }, [results, selectedGenre, searchSortBy])
 
   const collectionIdByDiscogsId = useMemo(
     () =>
@@ -116,6 +118,8 @@ const SearchPage = () => {
                   hasSearched={true}
                   selectedGenre={selectedGenre}
                   onGenreSelect={setSelectedGenre}
+                  sortBy={searchSortBy}
+                  onSortChange={setSearchSortBy}
                   hasNextPage={hasNextPage}
                   isFetchingNextPage={isFetchingNextPage}
                   nextPageErrorMessage={nextPageErrorMessage}

@@ -7,12 +7,14 @@ import AuthInput from '@/components/auth/AuthInput'
 import PasswordToggle from '@/components/auth/PasswordToggle'
 import useAuth from '@/hooks/useAuth'
 import { loginSchema, type LoginFormValues } from '@/schemas/auth'
+import googleIcon from '@/assets/icons/google.svg'
+import kakaoIcon from '@/assets/icons/kakao.svg'
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [authError, setAuthError] = useState('')
 
-  const { signIn } = useAuth()
+  const { signIn, signInWithGoogle, signInWithKakao } = useAuth()
   const navigate = useNavigate()
 
   const {
@@ -31,6 +33,24 @@ const LoginForm = () => {
       navigate('/')
     } catch {
       setAuthError('이메일 또는 비밀번호가 올바르지 않습니다.')
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    setAuthError('')
+    try {
+      await signInWithGoogle()
+    } catch {
+      setAuthError('구글 로그인 중 문제가 발생했어요.')
+    }
+  }
+
+  const handleKakaoLogin = async () => {
+    setAuthError('')
+    try {
+      await signInWithKakao()
+    } catch {
+      setAuthError('카카오 로그인 중 문제가 발생했어요.')
     }
   }
 
@@ -94,22 +114,22 @@ const LoginForm = () => {
           <div className="flex-1 h-px bg-border" />
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3">
           <Button
             type="button"
-            variant="outline"
-            className="flex items-center justify-center gap-2 text-xs tracking-widest uppercase"
+            onClick={handleGoogleLogin}
+            className="flex items-center justify-center gap-2 text-sm font-medium bg-white text-[#1F1F1F] rounded-xl hover:bg-white/90 cursor-pointer"
           >
-            <span>🔊</span>
-            Google
+            <img src={googleIcon} alt="" className="w-[20px] h-[20px]" />
+            Google로 계속하기
           </Button>
           <Button
             type="button"
-            variant="outline"
-            className="flex items-center justify-center gap-2 text-xs tracking-widest uppercase"
+            onClick={handleKakaoLogin}
+            className="flex items-center justify-center gap-2 text-sm font-medium bg-[#FEE500] text-black rounded-xl hover:bg-[#FEE500]/90 cursor-pointer"
           >
-            <span>◎</span>
-            Discogs
+            <img src={kakaoIcon} alt="" className="w-[20px] h-[20px]" />
+            카카오로 계속하기
           </Button>
         </div>
       </div>
