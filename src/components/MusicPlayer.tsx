@@ -9,9 +9,20 @@ interface MusicPlayerProps {
   hiddenByScroll?: boolean
 }
 
+// 이 값(초) 이내에 "이전 곡" 버튼을 누르면 실제 이전 앨범으로 이동, 그 외엔 현재 곡을 처음으로 되돌림
+const PREV_TRACK_THRESHOLD_SECONDS = 1
+
 const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
-  const { currentAlbum, closePlayer, isPlaying, togglePlay, playbackError, clearPlaybackError } =
-    usePlayer()
+  const {
+    currentAlbum,
+    closePlayer,
+    isPlaying,
+    togglePlay,
+    playbackError,
+    clearPlaybackError,
+    next,
+    prev,
+  } = usePlayer()
   const [isClosing, setIsClosing] = useState(false)
   const [trackedAlbum, setTrackedAlbum] = useState(currentAlbum)
   const [progress, setProgress] = useState(0)
@@ -80,17 +91,21 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
     setProgress((audio.currentTime / audio.duration) * 100)
   }
 
-  // 재생이 끝나면 재생 위치를 처음으로 되돌려서, 다시 눌렀을 때 처음부터 재생되게 함
+  // 재생이 끝나면 다음 앨범으로 자동 이동 (큐 끝이면 next()가 알아서 재생을 멈춤)
   const handleEnded = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0
-    }
-    togglePlay()
+    next()
   }
 
-  const handleRestart = () => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0
+  // 재생 위치가 임계값 이내면 실제 이전 앨범으로, 그 외엔 현재 곡을 처음으로 되돌림
+  const handlePrevClick = () => {
+    const audio = audioRef.current
+    if (!audio) {
+      return
+    }
+    if (audio.currentTime < PREV_TRACK_THRESHOLD_SECONDS) {
+      prev()
+    } else {
+      audio.currentTime = 0
     }
   }
 
@@ -150,9 +165,9 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
       {/* 컨트롤러 */}
       <div className="flex items-center justify-center gap-4">
         <button
-          onClick={handleRestart}
+          onClick={handlePrevClick}
           className="text-secondary hover:text-primary cursor-pointer"
-          aria-label="처음부터 재생"
+          aria-label="이전 곡"
         >
           <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
             <rect x="0" y="0" width="1.5" height="10" fill="currentColor" />
@@ -168,7 +183,11 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
           isPlaying={isPlaying}
         />
 
-        <button className="text-secondary hover:text-primary cursor-pointer" aria-label="다음 곡">
+        <button
+          onClick={next}
+          className="text-secondary hover:text-primary cursor-pointer"
+          aria-label="다음 곡"
+        >
           <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
             <path d="M1 1L8 5L1 9Z" fill="currentColor" />
             <rect x="8.5" y="0" width="1.5" height="10" fill="currentColor" />

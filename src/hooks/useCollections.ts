@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getCollections } from '../services/collections'
 import { type CollectionSortOption } from '../types'
@@ -13,7 +14,9 @@ const useCollections = (sortBy: CollectionSortOption) => {
     enabled: !!user,
   })
 
-  const collections = data ? sortItems(data, sortBy) : []
+  // data/sortBy가 실제로 바뀔 때만 새 배열을 만들어 참조 안정성을 유지
+  // (그렇지 않으면 이 배열을 참조하는 useEffect들이 매 렌더링마다 재실행됨)
+  const collections = useMemo(() => (data ? sortItems(data, sortBy) : []), [data, sortBy])
 
   return { collections, isLoading: loading || isPending, isError }
 }

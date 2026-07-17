@@ -13,6 +13,7 @@ export interface PlayerContextValue {
   currentAlbum: PlayingAlbum | null
   isPlaying: boolean
   playQueue: (queue: Collection[], index: number) => void
+  syncQueue: (queue: Collection[]) => void
   togglePlay: () => void
   closePlayer: () => void
   next: () => void

@@ -5,25 +5,27 @@ import type { Collection } from '../types'
 
 export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const [queue, setQueue] = useState<Collection[]>([])
-  const [currentIndex, setCurrentIndex] = useState(0)
+  // 인덱스 대신 앨범 id로 추적 — 재생 도중 큐가 삭제/재정렬되어도 위치를 안전하게 찾을 수 있음
+  const [currentAlbumId, setCurrentAlbumId] = useState<string | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [playbackError, setPlaybackError] = useState<string | null>(null)
   // 다음/이전 버튼으로 이동한 경우에만 재생 실패 시 자동으로 다음 곡으로 넘어감
   // (재생 버튼을 눌러 새로 재생을 시작한 경우엔 그대로 에러를 보여줌)
   const [isNavigating, setIsNavigating] = useState(false)
-  // 같은 (인덱스, 앨범) 조합의 실패를 한 번만 처리하기 위한 추적 값
+  // 같은 앨범의 실패를 한 번만 처리하기 위한 추적 값
   const [handledKey, setHandledKey] = useState<string | null>(null)
 
-  const currentCollection = queue[currentIndex] ?? null
+  const currentIndex = currentAlbumId ? queue.findIndex((c) => c.id === currentAlbumId) : -1
+  const currentCollection = currentIndex >= 0 ? queue[currentIndex] : null
 
-  // currentIndex가 바뀌면(다음/이전 곡 이동) artist/album명도 바뀌어 자동으로 재조회됨
+  // currentAlbumId가 바뀌면(다음/이전 곡 이동) artist/album명도 바뀌어 자동으로 재조회됨
   const { previewUrl, isLoading: isPreviewLoading } = useAlbumPreview(
     currentCollection?.artist_name ?? '',
     currentCollection?.album_name ?? '',
     currentCollection !== null,
   )
 
-  const currentKey = currentCollection ? `${currentIndex}:${currentCollection.id}` : null
+  const currentKey = currentCollection?.id ?? null
   const isResolved = currentCollection !== null && !isPreviewLoading
 
   // previewUrl 조회가 끝났는데 값이 없으면(재생 불가) 처리.
@@ -33,7 +35,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     setHandledKey(currentKey)
     if (!previewUrl) {
       if (isNavigating && currentIndex < queue.length - 1) {
-        setCurrentIndex(currentIndex + 1)
+        setCurrentAlbumId(queue[currentIndex + 1].id)
       } else {
         setPlaybackError('재생할 수 없습니다.')
       }
@@ -54,8 +56,14 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     setIsNavigating(false)
     setHandledKey(null)
     setQueue(nextQueue)
-    setCurrentIndex(index)
+    setCurrentAlbumId(nextQueue[index]?.id ?? null)
     setIsPlaying(true)
+  }
+
+  // 컬렉션 목록이 바뀔 때마다(삭제/추가/정렬 변경 등) 큐를 최신 상태로 동기화.
+  // 현재 재생 중인 앨범이 새 목록에서 사라졌으면 currentIndex가 자동으로 -1이 되어 재생이 멈춤
+  const syncQueue = (nextQueue: Collection[]) => {
+    setQueue(nextQueue)
   }
 
   const togglePlay = () => {
@@ -64,19 +72,26 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
   const closePlayer = () => {
     setQueue([])
-    setCurrentIndex(0)
+    setCurrentAlbumId(null)
     setIsPlaying(false)
     setHandledKey(null)
   }
 
   const next = () => {
     setIsNavigating(true)
-    setCurrentIndex((current) => (current < queue.length - 1 ? current + 1 : current))
+    if (currentIndex >= 0 && currentIndex < queue.length - 1) {
+      setCurrentAlbumId(queue[currentIndex + 1].id)
+    } else {
+      // 큐 마지막까지 왔으면(재생 끝 자동 이동 포함) 더 넘어갈 곳이 없으니 재생을 멈춤
+      setIsPlaying(false)
+    }
   }
 
   const prev = () => {
     setIsNavigating(true)
-    setCurrentIndex((current) => (current > 0 ? current - 1 : current))
+    if (currentIndex > 0) {
+      setCurrentAlbumId(queue[currentIndex - 1].id)
+    }
   }
 
   const notifyPlaybackError = (message: string) => {
@@ -93,6 +108,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         currentAlbum,
         isPlaying,
         playQueue,
+        syncQueue,
         togglePlay,
         closePlayer,
         next,
