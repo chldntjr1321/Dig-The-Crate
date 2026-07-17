@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { extractDominantColor } from '../utils/extractDominantColor'
 import type { RgbColor } from '../types'
 
 // 캔버스에 그릴 한 변 길이(px). 원본 해상도와 무관하게 이 크기로 맞춰서 그림
@@ -25,6 +24,7 @@ const useAlbumColor = (coverUrl: string) => {
 
   useEffect(() => {
     let cancelled = false
+    let worker: Worker | null = null
 
     const image = new Image()
     image.crossOrigin = 'anonymous'
@@ -33,6 +33,8 @@ const useAlbumColor = (coverUrl: string) => {
       if (cancelled) {
         return
       }
+
+      let imageData: ImageData
       try {
         // 원본보다 작아도 SAMPLE_SIZE까지 확대해서 그림 (Discogs 커버는 보통 500~600px 수준이라
         // 축소만 허용하면 이 값을 올려도 실제 분석 픽셀 수가 늘지 않음)
@@ -52,15 +54,35 @@ const useAlbumColor = (coverUrl: string) => {
         ctx.drawImage(image, 0, 0, width, height)
         // 외부 이미지가 CORS를 허용하지 않으면 캔버스가 tainted 상태가 되어
         // getImageData 호출 시 SecurityError가 발생함 — catch에서 조용히 실패 처리
-        const imageData = ctx.getImageData(0, 0, width, height)
-        setColor(extractDominantColor(imageData))
+        imageData = ctx.getImageData(0, 0, width, height)
       } catch {
         setColor(null)
-      } finally {
+        setIsLoading(false)
+        return
+      }
+
+      // 무거운 대표색 계산(Median Cut)은 Worker에 위임해 메인 스레드를 막지 않음
+      worker = new Worker(new URL('../workers/colorExtractor.worker.ts', import.meta.url), {
+        type: 'module',
+      })
+
+      worker.onmessage = (event: MessageEvent<RgbColor>) => {
         if (!cancelled) {
+          setColor(event.data)
           setIsLoading(false)
         }
+        worker?.terminate()
       }
+
+      worker.onerror = () => {
+        if (!cancelled) {
+          setColor(null)
+          setIsLoading(false)
+        }
+        worker?.terminate()
+      }
+
+      worker.postMessage(imageData)
     }
 
     image.onerror = () => {
@@ -73,6 +95,7 @@ const useAlbumColor = (coverUrl: string) => {
 
     return () => {
       cancelled = true
+      worker?.terminate()
     }
   }, [coverUrl])
 
