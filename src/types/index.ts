@@ -60,3 +60,9 @@ export interface Collection {
   tracklist?: Track[]
   added_at: string
 }
+
+export interface RgbColor {
+  r: number
+  g: number
+  b: number
+}
