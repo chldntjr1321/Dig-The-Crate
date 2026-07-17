@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+import type { Collection } from '../types'
 
 export interface PlayingAlbum {
   coverUrl: string
@@ -11,9 +12,11 @@ export interface PlayingAlbum {
 export interface PlayerContextValue {
   currentAlbum: PlayingAlbum | null
   isPlaying: boolean
-  play: (album: PlayingAlbum) => void
+  playQueue: (queue: Collection[], index: number) => void
   togglePlay: () => void
   closePlayer: () => void
+  next: () => void
+  prev: () => void
   playbackError: string | null
   notifyPlaybackError: (message: string) => void
   clearPlaybackError: () => void
