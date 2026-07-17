@@ -5,6 +5,11 @@ import type { RgbColor } from '../types'
 // 캔버스에 그릴 최대 한 변 길이(px). 원본이 더 크면 이 크기로 축소해서 연산량을 제한
 const SAMPLE_SIZE = 200
 
+// Discogs 이미지 CDN이 CORS 허용 헤더를 보내지 않아 캔버스에서 픽셀을 읽을 수 없음.
+// wsrv.nl(무료 공개 이미지 프록시)을 거쳐 access-control-allow-origin 헤더를 붙여서 받아옴.
+// 화면에 보이는 <img>는 이 프록시를 거치지 않고 원본 URL을 그대로 사용함(분석용 캔버스에만 적용)
+const CORS_PROXY_BASE = 'https://wsrv.nl/?url='
+
 const useAlbumColor = (coverUrl: string) => {
   const [color, setColor] = useState<RgbColor | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -61,7 +66,7 @@ const useAlbumColor = (coverUrl: string) => {
       }
     }
 
-    image.src = coverUrl
+    image.src = `${CORS_PROXY_BASE}${encodeURIComponent(coverUrl)}`
 
     return () => {
       cancelled = true
