@@ -11,14 +11,14 @@ const SAMPLE_SIZE = 1500
 const CORS_PROXY_BASE = 'https://wsrv.nl/?url='
 
 const useAlbumColor = (coverUrl: string) => {
-  const [color, setColor] = useState<RgbColor | null>(null)
+  const [colors, setColors] = useState<RgbColor[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   // coverUrl이 바뀌면(다른 앨범) 렌더 중 값 비교로 이전 결과를 리셋
   // (useEffect 안에서 직접 setState하면 react-hooks/set-state-in-effect에 걸림)
   const [trackedCoverUrl, setTrackedCoverUrl] = useState(coverUrl)
   if (coverUrl !== trackedCoverUrl) {
     setTrackedCoverUrl(coverUrl)
-    setColor(null)
+    setColors(null)
     setIsLoading(true)
   }
 
@@ -56,7 +56,7 @@ const useAlbumColor = (coverUrl: string) => {
         // getImageData 호출 시 SecurityError가 발생함 — catch에서 조용히 실패 처리
         imageData = ctx.getImageData(0, 0, width, height)
       } catch {
-        setColor(null)
+        setColors(null)
         setIsLoading(false)
         return
       }
@@ -66,9 +66,9 @@ const useAlbumColor = (coverUrl: string) => {
         type: 'module',
       })
 
-      worker.onmessage = (event: MessageEvent<RgbColor>) => {
+      worker.onmessage = (event: MessageEvent<RgbColor[]>) => {
         if (!cancelled) {
-          setColor(event.data)
+          setColors(event.data)
           setIsLoading(false)
         }
         worker?.terminate()
@@ -76,7 +76,7 @@ const useAlbumColor = (coverUrl: string) => {
 
       worker.onerror = () => {
         if (!cancelled) {
-          setColor(null)
+          setColors(null)
           setIsLoading(false)
         }
         worker?.terminate()
@@ -99,7 +99,7 @@ const useAlbumColor = (coverUrl: string) => {
     }
   }, [coverUrl])
 
-  return { color, isLoading }
+  return { colors, isLoading }
 }
 
 export default useAlbumColor

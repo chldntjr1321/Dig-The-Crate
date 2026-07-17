@@ -28,7 +28,15 @@ const AlbumDetailModal = ({
   footer,
 }: AlbumDetailModalProps) => {
   const [isAnimating, setIsAnimating] = useState(false)
-  const { color } = useAlbumColor(coverUrl)
+  const { colors } = useAlbumColor(coverUrl)
+
+  // 추출된 대표색(최대 2개) → 기존 배경(#1C1208, bg-search-primary와 동일)으로 이어지는 그라데이션.
+  // 앨범마다 달라지는 런타임 계산값이라 디자인 토큰으로 표현할 수 없어 하드코딩 색상 금지 규칙의 예외로 둠
+  const gradientBackground = colors
+    ? colors.length >= 2
+      ? `linear-gradient(180deg, rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}) 0%, rgb(${colors[1].r}, ${colors[1].g}, ${colors[1].b}) 45%, #1C1208 80%)`
+      : `linear-gradient(180deg, rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}) 0%, #1C1208 65%)`
+    : undefined
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -65,15 +73,12 @@ const AlbumDetailModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* 대표색 그라데이션 레이어 — 기본 배경(bg-search-primary) 위에 겹쳐두고,
-            색상 추출이 끝나면 opacity로 서서히 페이드인 (배경이 갑자기 바뀌는 느낌 방지).
-            앨범마다 달라지는 런타임 계산값이라 디자인 토큰으로 표현할 수 없어 하드코딩 색상 금지 규칙의 예외로 둠 */}
+            색상 추출이 끝나면 opacity로 서서히 페이드인 (배경이 갑자기 바뀌는 느낌 방지) */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: color
-              ? `linear-gradient(180deg, rgb(${color.r}, ${color.g}, ${color.b}) 0%, #1C1208 65%)`
-              : undefined,
-            opacity: color ? 1 : 0,
+            background: gradientBackground,
+            opacity: colors ? 1 : 0,
             transition: 'opacity 0.6s ease',
           }}
         />

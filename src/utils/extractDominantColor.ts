@@ -11,8 +11,11 @@ interface ColorBox {
   population: number
 }
 
-// Median Cut 알고리즘으로 이미지의 대표(vibrant) 색상을 추출한다
-export const extractDominantColor = (imageData: ImageData): RgbColor => {
+// 색상 후보를 고를 때 이미 선택된 색과 이만큼(RGB 유클리드 거리, 0~441) 이상 떨어져야 함
+const MIN_COLOR_DISTANCE = 80
+
+// Median Cut 알고리즘으로 이미지의 대표(vibrant) 색상을 최대 2개 추출한다
+export const extractDominantColor = (imageData: ImageData): RgbColor[] => {
   const pixels: RgbTuple[] = []
   const { data } = imageData
   for (let i = 0; i < data.length; i += 4) {
@@ -24,11 +27,11 @@ export const extractDominantColor = (imageData: ImageData): RgbColor => {
   }
 
   if (pixels.length === 0) {
-    return { r: 0, g: 0, b: 0 }
+    return [{ r: 0, g: 0, b: 0 }]
   }
 
   const boxes = splitBox(pixels, COLOR_BOX_DEPTH)
-  return pickVibrantColor(boxes)
+  return pickVibrantColors(boxes, 2)
 }
 
 // 픽셀 집합을 색상 범위가 가장 넓은 축(R/G/B) 기준으로 정렬해 절반씩 재귀 분할
@@ -75,24 +78,44 @@ const averageColor = (pixels: RgbTuple[]): RgbColor => {
   }
 }
 
-// 채도가 높으면서 픽셀 비중도 큰 상자를 대표색으로 선택 (Spotify류 vibrant swatch 선정과 유사)
-const pickVibrantColor = (boxes: ColorBox[]): RgbColor => {
+// 채도가 높으면서 픽셀 비중도 큰 상자를 우선으로, 서로 충분히 다른 색만 최대 count개 선택
+// (Spotify류 vibrant swatch 선정과 유사하되, 비슷한 색끼리 중복 선택되는 것을 방지)
+const pickVibrantColors = (boxes: ColorBox[], count: number): RgbColor[] => {
   const totalPixels = boxes.reduce((sum, box) => sum + box.population, 0)
 
-  let best = boxes[0]
-  let bestScore = -Infinity
+  const ranked = boxes
+    .map((box) => ({
+      color: box.color,
+      score: getSaturation(box.color) * 0.7 + (box.population / totalPixels) * 0.3,
+    }))
+    .sort((a, b) => b.score - a.score)
 
-  for (const box of boxes) {
-    const saturation = getSaturation(box.color)
-    const populationRatio = box.population / totalPixels
-    const score = saturation * 0.7 + populationRatio * 0.3
-    if (score > bestScore) {
-      bestScore = score
-      best = box
+  const picked: RgbColor[] = []
+  for (const candidate of ranked) {
+    if (picked.length >= count) {
+      break
+    }
+    const isDistinctEnough = picked.every(
+      (existing) => colorDistance(existing, candidate.color) >= MIN_COLOR_DISTANCE,
+    )
+    if (isDistinctEnough) {
+      picked.push(candidate.color)
     }
   }
 
-  return best.color
+  // 이미지 전체가 비슷한 색이라 기준을 만족하는 색을 하나도 못 찾았으면, 1등 색만이라도 보장
+  if (picked.length === 0) {
+    picked.push(ranked[0].color)
+  }
+
+  return picked
+}
+
+const colorDistance = (a: RgbColor, b: RgbColor): number => {
+  const dr = a.r - b.r
+  const dg = a.g - b.g
+  const db = a.b - b.b
+  return Math.sqrt(dr * dr + dg * dg + db * db)
 }
 
 const getSaturation = ({ r, g, b }: RgbColor): number => {

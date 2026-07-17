@@ -4,6 +4,6 @@ import { extractDominantColor } from '../utils/extractDominantColor'
 const ctx = self as unknown as Worker
 
 ctx.onmessage = (event: MessageEvent<ImageData>) => {
-  const color = extractDominantColor(event.data)
-  ctx.postMessage(color)
+  const colors = extractDominantColor(event.data)
+  ctx.postMessage(colors)
 }
