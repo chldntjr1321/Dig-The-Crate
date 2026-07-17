@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { RgbColor } from '../types'
 
-// 캔버스에 그릴 한 변 길이(px). 원본 해상도와 무관하게 이 크기로 맞춰서 그림
-// 값이 클수록 색 분석이 더 정밀해지지만, 픽셀 수가 늘어 연산량도 커짐
-const SAMPLE_SIZE = 1500
+// 캔버스에 그릴 최대 한 변 길이(px). 원본이 더 크면 이 크기로 축소해서 연산량을 제한
+// 값이 클수록 원본 디테일을 더 많이 보존하지만(더 정확한 색 분석), 픽셀 수가 늘어 연산량도 커짐
+const SAMPLE_SIZE = 500
 
 // Discogs 이미지 CDN이 CORS 허용 헤더를 보내지 않아 캔버스에서 픽셀을 읽을 수 없음.
 // wsrv.nl(무료 공개 이미지 프록시)을 거쳐 access-control-allow-origin 헤더를 붙여서 받아옴.
@@ -36,9 +36,7 @@ const useAlbumColor = (coverUrl: string) => {
 
       let imageData: ImageData
       try {
-        // 원본보다 작아도 SAMPLE_SIZE까지 확대해서 그림 (Discogs 커버는 보통 500~600px 수준이라
-        // 축소만 허용하면 이 값을 올려도 실제 분석 픽셀 수가 늘지 않음)
-        const scale = SAMPLE_SIZE / Math.max(image.width, image.height)
+        const scale = Math.min(1, SAMPLE_SIZE / Math.max(image.width, image.height))
         const width = Math.max(1, Math.round(image.width * scale))
         const height = Math.max(1, Math.round(image.height * scale))
 

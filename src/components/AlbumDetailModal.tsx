@@ -3,6 +3,7 @@ import type { Track } from '@/types'
 import CloseIcon from '@/components/ui/CloseIcon'
 import TrackList from '@/components/ui/TrackList'
 import useAlbumColor from '@/hooks/useAlbumColor'
+import { mutedColor } from '@/utils/mutedColor'
 
 const MODAL_WIDTH = 480
 
@@ -30,12 +31,14 @@ const AlbumDetailModal = ({
   const [isAnimating, setIsAnimating] = useState(false)
   const { colors } = useAlbumColor(coverUrl)
 
-  // 추출된 대표색(최대 2개) → 기존 배경(#1C1208, bg-search-primary와 동일)으로 이어지는 그라데이션.
+  // 추출된 대표색(최대 2개)을 mutedColor로 톤 다운(채도↓, 밝기 상한)한 뒤
+  // 기존 배경(#1C1208, bg-search-primary와 동일)으로 이어지는 그라데이션.
   // 앨범마다 달라지는 런타임 계산값이라 디자인 토큰으로 표현할 수 없어 하드코딩 색상 금지 규칙의 예외로 둠
-  const gradientBackground = colors
-    ? colors.length >= 2
-      ? `linear-gradient(180deg, rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}) 0%, rgb(${colors[1].r}, ${colors[1].g}, ${colors[1].b}) 45%, #1C1208 80%)`
-      : `linear-gradient(180deg, rgb(${colors[0].r}, ${colors[0].g}, ${colors[0].b}) 0%, #1C1208 65%)`
+  const gradientColors = colors?.map(mutedColor)
+  const gradientBackground = gradientColors
+    ? gradientColors.length >= 2
+      ? `linear-gradient(180deg, rgb(${gradientColors[0].r}, ${gradientColors[0].g}, ${gradientColors[0].b}) 0%, rgb(${gradientColors[1].r}, ${gradientColors[1].g}, ${gradientColors[1].b}) 45%, #1C1208 80%)`
+      : `linear-gradient(180deg, rgb(${gradientColors[0].r}, ${gradientColors[0].g}, ${gradientColors[0].b}) 0%, #1C1208 65%)`
     : undefined
 
   useEffect(() => {
