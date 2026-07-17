@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import type { Collection } from '../../types'
 import useDeleteCollection from '../../hooks/useDeleteCollection'
-import useAlbumPreview from '../../hooks/useAlbumPreview'
 import { usePlayer } from '../../hooks/usePlayer'
 import DeleteConfirmModal from './DeleteConfirmModal'
 import AlbumCardOverlay from './AlbumCardOverlay'
@@ -9,22 +8,18 @@ import AlbumDetailModal from '../AlbumDetailModal'
 
 interface AlbumCardProps {
   album: Collection
+  albums: Collection[]
+  index: number
   onError: (message: string) => void
 }
 
-const AlbumCard = ({ album, onError }: AlbumCardProps) => {
+const AlbumCard = ({ album, albums, index, onError }: AlbumCardProps) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [cardRect, setCardRect] = useState<DOMRect | null>(null)
   const coverButtonRef = useRef<HTMLButtonElement>(null)
   const { deleteCollection, isPending } = useDeleteCollection(onError)
-  const { play, notifyPlaybackError } = usePlayer()
-  const [isPreviewEnabled, setIsPreviewEnabled] = useState(false)
-  const { previewUrl, isLoading: isPreviewLoading } = useAlbumPreview(
-    album.artist_name,
-    album.album_name,
-    isPreviewEnabled,
-  )
+  const { playQueue } = usePlayer()
 
   const handleConfirm = () => {
     deleteCollection(album.id)
@@ -44,38 +39,8 @@ const AlbumCard = ({ album, onError }: AlbumCardProps) => {
   }
 
   const handlePlayClick = () => {
-    // 처음 클릭이면 조회를 시작하고 로딩 상태로 먼저 미니 플레이어를 띄움
-    // 이미 조회된 적 있으면(재클릭) 캐시된 결과를 바로 반영
-    const isKnownFailure = isPreviewEnabled && !isPreviewLoading && !previewUrl
-    setIsPreviewEnabled(true)
-    play({
-      coverUrl: album.cover_url,
-      albumName: album.album_name,
-      artistName: album.artist_name,
-      previewUrl: isPreviewEnabled ? previewUrl : null,
-      isPreviewLoading: isPreviewEnabled ? isPreviewLoading : true,
-    })
-    if (isKnownFailure) {
-      notifyPlaybackError('재생할 수 없습니다.')
-    }
+    playQueue(albums, index)
   }
-
-  // previewUrl 조회가 끝나면 Context의 currentAlbum을 실제 결과로 갱신
-  useEffect(() => {
-    if (isPreviewEnabled && !isPreviewLoading) {
-      play({
-        coverUrl: album.cover_url,
-        albumName: album.album_name,
-        artistName: album.artist_name,
-        previewUrl,
-        isPreviewLoading: false,
-      })
-      if (!previewUrl) {
-        notifyPlaybackError('재생할 수 없습니다.')
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [previewUrl, isPreviewLoading])
 
   return (
     <div className="album-card-wrapper relative group">
