@@ -1,4 +1,4 @@
-## 🎵 Dig The Crate | Find your Vinyl
+## 🎵 Dig The Crate
 
 ![banner](./docs/readme-assets/banner.png)
 
