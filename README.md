@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+## 🎵 Dig The Crate | Find your Vinyl
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![banner](./docs/readme-assets/banner.png)
 
-Currently, two official plugins are available:
+### 📌 프로젝트 소개
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+소장한 LP를 검색하고 등록해서 나만의 컬렉션으로 관리합니다.
+앨범 커버 이미지, 수록곡을 포함한 앨범 정보를 제공하고, 각 앨범의 수록곡 중 한 곡에 대해 30초 미리듣기도 지원합니다.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🧑‍💻 기술 스택
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+프레임워크   Vite + React 18 + TypeScript
+스타일링     TailwindCSS
+서버 상태    TanStack Query
+백엔드/인증  Supabase (Auth + DB)
+라우팅      react-router
+코드 품질    ESLint + Prettier
+배포        Vercel
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### ✨ 핵심 기능
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- 로그인 / 회원가입
+- 앨범 검색 / 개인 컬렉션에 추가·삭제
+- Discogs 검색으로 앨범 정보 및 커버 이미지 가져오기
+- 30초 미리듣기 + 미니 LP 플레이어
+
+![screenshot](./docs/readme-assets/readme-preview.png)
+
+---
+
+### 📦 폴더 구조
+
 ```
+src/
+├── lib/          # Supabase 클라이언트, TanStack Query 설정
+├── services/     # Discogs / Supabase API 호출 함수
+├── hooks/        # 커스텀 훅
+├── components/   # UI 컴포넌트
+├── pages/        # 라우트 페이지
+├── types/        # 타입 정의
+├── utils/        # 유틸 함수
+└── workers/      # Web Worker (앨범 커버 색상 추출 위임)
+```
+
+자세한 구조는 [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) 참고
+
+---
+
+### 🗄️ 더 알아보기
+
+작업 히스토리, 기술적 결정, 트러블슈팅 기록은 [Wiki](https://github.com/chldntjr1321/Dig-The-Crate/wiki)에 정리되어 있습니다.
