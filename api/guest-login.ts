@@ -1,5 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
+// Request/Response(Web 표준)를 그대로 쓰기 위해 Edge 런타임으로 명시한다.
+// 명시하지 않으면 기본 Node 런타임이 (req, res) 콜백 방식을 기대해서 응답이 끝나지 않고 계속 pending 상태로 남는다.
+export const config = { runtime: 'edge' }
+
 // 게스트 계정 비밀번호는 서버에서만 다루고 브라우저에는 세션 토큰만 내려준다.
 export default async function handler(request: Request): Promise<Response> {
   if (request.method !== 'POST') {
