@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import supabase from '@/lib/supabase'
+import { resetGuestCollection } from '@/services/collections'
 
 const useAuth = () => {
   const [user, setUser] = useState<User | null>(null)
@@ -39,6 +40,10 @@ const useAuth = () => {
   }
 
   const signOut = async () => {
+    if (user && Boolean(user.user_metadata.is_guest)) {
+      await resetGuestCollection(user.id)
+    }
+
     const { error } = await supabase.auth.signOut()
     if (error) throw error
   }
