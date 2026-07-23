@@ -53,7 +53,25 @@ const useAuth = () => {
     if (error) throw error
   }
 
-  return { user, loading, signIn, signUp, signOut, signInWithGoogle, signInWithKakao }
+  const signInAsGuest = async () => {
+    const response = await fetch('/api/guest-login', { method: 'POST' })
+    if (!response.ok) throw new Error('게스트 로그인에 실패했습니다.')
+
+    const { access_token, refresh_token } = await response.json()
+    const { error } = await supabase.auth.setSession({ access_token, refresh_token })
+    if (error) throw error
+  }
+
+  return {
+    user,
+    loading,
+    signIn,
+    signUp,
+    signOut,
+    signInWithGoogle,
+    signInWithKakao,
+    signInAsGuest,
+  }
 }
 
 export default useAuth
