@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import Header from '../components/Header'
 import SearchInput from '../components/search/SearchInput'
 import SearchResultList from '../components/search/SearchResultList'
@@ -9,12 +10,19 @@ import useDiscogsSearch from '../hooks/useDiscogsSearch'
 import useRecommendations from '../hooks/useRecommendations'
 import useCollections from '../hooks/useCollections'
 import { sortItems } from '../utils/sortItems'
-import type { Genre, SearchSortOption } from '../types'
+import { GENRES, SEARCH_SORT_LABELS, type Genre, type SearchSortOption } from '../types'
 
 const SearchPage = () => {
-  const [query, setQuery] = useState<string>('')
-  const [selectedGenre, setSelectedGenre] = useState<Genre>('All')
-  const [searchSortBy, setSearchSortBy] = useState<SearchSortOption>('relevance')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const query = searchParams.get('q') ?? ''
+  const genreParam = searchParams.get('genre')
+  const selectedGenre: Genre =
+    genreParam && (GENRES as readonly string[]).includes(genreParam)
+      ? (genreParam as Genre)
+      : 'All'
+  const sortParam = searchParams.get('sort')
+  const searchSortBy: SearchSortOption =
+    sortParam && sortParam in SEARCH_SORT_LABELS ? (sortParam as SearchSortOption) : 'relevance'
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const scrollContainerRef = useRef<HTMLElement>(null)
 
@@ -64,9 +72,15 @@ const SearchPage = () => {
       >
         <div className="max-w-2xl mx-auto px-6 py-10">
           <SearchInput
+            initialValue={query}
             onSearch={(value) => {
-              setQuery(value)
-              setSelectedGenre('All')
+              setSearchParams((prev) => {
+                const next = new URLSearchParams(prev)
+                if (value) next.set('q', value)
+                else next.delete('q')
+                next.delete('genre')
+                return next
+              })
             }}
           />
         </div>
@@ -117,9 +131,23 @@ const SearchPage = () => {
                   onError={setToastMessage}
                   hasSearched={true}
                   selectedGenre={selectedGenre}
-                  onGenreSelect={setSelectedGenre}
+                  onGenreSelect={(genre) => {
+                    setSearchParams((prev) => {
+                      const next = new URLSearchParams(prev)
+                      if (genre === 'All') next.delete('genre')
+                      else next.set('genre', genre)
+                      return next
+                    })
+                  }}
                   sortBy={searchSortBy}
-                  onSortChange={setSearchSortBy}
+                  onSortChange={(value) => {
+                    setSearchParams((prev) => {
+                      const next = new URLSearchParams(prev)
+                      if (value === 'relevance') next.delete('sort')
+                      else next.set('sort', value)
+                      return next
+                    })
+                  }}
                   hasNextPage={hasNextPage}
                   isFetchingNextPage={isFetchingNextPage}
                   nextPageErrorMessage={nextPageErrorMessage}
