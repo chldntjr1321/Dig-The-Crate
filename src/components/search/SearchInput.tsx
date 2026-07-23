@@ -4,6 +4,7 @@ import CloseIcon from '@/components/ui/CloseIcon'
 interface SearchInputProps {
   onSearch: (value: string) => void
   placeholder?: string
+  initialValue?: string
 }
 
 const SearchIcon = ({ className }: { className?: string }) => (
@@ -27,8 +28,9 @@ const SearchIcon = ({ className }: { className?: string }) => (
 const SearchInput = ({
   onSearch,
   placeholder = 'Search artists, albums, or genres...',
+  initialValue = '',
 }: SearchInputProps) => {
-  const [inputValue, setInputValue] = useState('')
+  const [inputValue, setInputValue] = useState(initialValue)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
