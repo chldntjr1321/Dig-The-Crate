@@ -10,12 +10,16 @@ import useDiscogsSearch from '../hooks/useDiscogsSearch'
 import useRecommendations from '../hooks/useRecommendations'
 import useCollections from '../hooks/useCollections'
 import { sortItems } from '../utils/sortItems'
-import { SEARCH_SORT_LABELS, type Genre, type SearchSortOption } from '../types'
+import { GENRES, SEARCH_SORT_LABELS, type Genre, type SearchSortOption } from '../types'
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const query = searchParams.get('q') ?? ''
-  const [selectedGenre, setSelectedGenre] = useState<Genre>('All')
+  const genreParam = searchParams.get('genre')
+  const selectedGenre: Genre =
+    genreParam && (GENRES as readonly string[]).includes(genreParam)
+      ? (genreParam as Genre)
+      : 'All'
   const sortParam = searchParams.get('sort')
   const searchSortBy: SearchSortOption =
     sortParam && sortParam in SEARCH_SORT_LABELS ? (sortParam as SearchSortOption) : 'relevance'
@@ -74,9 +78,9 @@ const SearchPage = () => {
                 const next = new URLSearchParams(prev)
                 if (value) next.set('q', value)
                 else next.delete('q')
+                next.delete('genre')
                 return next
               })
-              setSelectedGenre('All')
             }}
           />
         </div>
@@ -127,7 +131,14 @@ const SearchPage = () => {
                   onError={setToastMessage}
                   hasSearched={true}
                   selectedGenre={selectedGenre}
-                  onGenreSelect={setSelectedGenre}
+                  onGenreSelect={(genre) => {
+                    setSearchParams((prev) => {
+                      const next = new URLSearchParams(prev)
+                      if (genre === 'All') next.delete('genre')
+                      else next.set('genre', genre)
+                      return next
+                    })
+                  }}
                   sortBy={searchSortBy}
                   onSortChange={(value) => {
                     setSearchParams((prev) => {
