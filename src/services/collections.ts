@@ -1,5 +1,6 @@
 import supabase from '../lib/supabase'
 import { getReleaseDetail } from './discogs'
+import { GUEST_INITIAL_COLLECTION } from './guestInitialCollection'
 import type { Collection, SearchResult } from '../types'
 
 export class DuplicateCollectionError extends Error {}
@@ -48,4 +49,23 @@ export const addCollection = async (
   }
 
   return data as Collection
+}
+
+export const resetGuestCollection = async (userId: string): Promise<void> => {
+  const { error: deleteError } = await supabase.from('collections').delete().eq('user_id', userId)
+  if (deleteError) throw deleteError
+
+  const rows = GUEST_INITIAL_COLLECTION.map((album) => ({
+    user_id: userId,
+    discogs_id: album.discogs_id,
+    album_name: album.album_name,
+    artist_name: album.artist_name,
+    cover_url: album.cover_url,
+    year: album.year,
+    genres: album.genres,
+    tracklist: album.tracklist,
+  }))
+
+  const { error: insertError } = await supabase.from('collections').insert(rows)
+  if (insertError) throw insertError
 }
