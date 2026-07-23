@@ -14,7 +14,7 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [authError, setAuthError] = useState('')
 
-  const { signIn, signInWithGoogle, signInWithKakao } = useAuth()
+  const { signIn, signInWithGoogle, signInWithKakao, signInAsGuest } = useAuth()
   const navigate = useNavigate()
 
   const {
@@ -51,6 +51,16 @@ const LoginForm = () => {
       await signInWithKakao()
     } catch {
       setAuthError('카카오 로그인 중 문제가 발생했어요.')
+    }
+  }
+
+  const handleGuestLogin = async () => {
+    setAuthError('')
+    try {
+      await signInAsGuest()
+      navigate('/')
+    } catch {
+      setAuthError('게스트 로그인 중 문제가 발생했어요.')
     }
   }
 
@@ -132,6 +142,12 @@ const LoginForm = () => {
             카카오로 계속하기
           </Button>
         </div>
+
+        <div className="h-px bg-border" />
+
+        <Button type="button" variant="outline" onClick={handleGuestLogin}>
+          게스트로 둘러보기
+        </Button>
       </div>
 
       <p className="text-center text-md text-secondary mt-6">
