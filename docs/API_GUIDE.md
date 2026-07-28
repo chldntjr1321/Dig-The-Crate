@@ -37,11 +37,44 @@ GET /database/search
 | `type`     | string | `release` 고정                             |
 | `per_page` | number | 한 번에 가져올 결과 수 (기본 10, 최대 100) |
 | `page`     | number | 페이지 번호                                |
+| `sort`     | string | 정렬 기준 (아래 "정렬 파라미터" 참조)      |
+| `sort_order` | string | `asc` \| `desc`                          |
 
 **예시 요청**
 
 ```
 GET /database/search?q=Miles+Davis+Kind+of+Blue&type=release&per_page=10
+```
+
+---
+
+### 정렬 파라미터 (`sort`, `sort_order`)
+
+> ⚠️ **비공식 동작**: `sort`/`sort_order`는 Discogs 공식 API 문서(discogs.com/developers)에 문서화되어 있지 않은 파라미터다. 실제 요청/응답을 반복 테스트해서 검증한 결과이며, Discogs가 내부 구현을 바꾸면 예고 없이 동작이 달라지거나 깨질 수 있다.
+
+**실제로 정렬되는 값** (직접 검증 완료)
+
+| 값     | 설명                       |
+| ------ | -------------------------- |
+| `year` | 발매 연도                  |
+| `want` | 위시리스트에 담은 사용자 수 |
+| `have` | 소장 등록한 사용자 수       |
+
+**파라미터는 받지만 실제로 정렬 안 되는 값** (관련도순으로 조용히 폴백됨)
+
+```
+artist, title, release_title, label, catno, format,
+added_date, id, master_id, num_for_sale, country, barcode, format_quantity
+```
+
+텍스트 필드(`artist`, `title` 등)는 검색엔진에 정렬 가능한 형태로 인덱싱되어 있지 않아서 발생하는 것으로 추정된다. 즉 **아티스트명순 / 앨범명순 정렬은 서버에서 지원 불가능**하다.
+
+**복합 정렬 불가**: `sort=want,year`처럼 여러 필드를 조합하는 시도(콤마, 파이프, 공백, 세미콜론, 배열 문법, 파라미터 반복 등)는 전부 실패한다. 한 번에 하나의 필드만 정렬 기준으로 지정 가능하다.
+
+**예시 요청**
+
+```
+GET /database/search?q=Miles+Davis&type=release&sort=year&sort_order=desc
 ```
 
 **응답 구조**
