@@ -9,7 +9,6 @@ import Toast from '../components/ui/Toast'
 import useDiscogsSearch from '../hooks/useDiscogsSearch'
 import useRecommendations from '../hooks/useRecommendations'
 import useCollections from '../hooks/useCollections'
-import { sortItems } from '../utils/sortItems'
 import { GENRES, SEARCH_SORT_LABELS, type Genre, type SearchSortOption } from '../types'
 
 const SearchPage = () => {
@@ -35,7 +34,7 @@ const SearchPage = () => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useDiscogsSearch(query)
+  } = useDiscogsSearch(query, searchSortBy)
   const { recommendations, isLoading: isRecommendationsLoading } =
     useRecommendations()
   const { collections } = useCollections('recently_added')
@@ -47,13 +46,15 @@ const SearchPage = () => {
   const isInitialError = errorMessage !== null && !hasResults
   const nextPageErrorMessage = hasResults ? errorMessage : null
 
-  const searchResults = useMemo(() => {
-    const genreFiltered =
+  // 정렬은 Discogs API(sort/sort_order)가 이미 처리해서 내려주므로
+  // 클라이언트에서는 장르 필터링만 한다 (docs/API_GUIDE.md 참조)
+  const searchResults = useMemo(
+    () =>
       selectedGenre === 'All'
         ? results
-        : results.filter((r) => r.genres?.includes(selectedGenre))
-    return sortItems(genreFiltered, searchSortBy)
-  }, [results, selectedGenre, searchSortBy])
+        : results.filter((r) => r.genres?.includes(selectedGenre)),
+    [results, selectedGenre],
+  )
 
   const collectionIdByDiscogsId = useMemo(
     () =>
