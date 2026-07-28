@@ -4,8 +4,9 @@ import {
   DiscogsRateLimitError,
   searchAlbums,
 } from '../services/discogs'
+import { SEARCH_SORT_PARAMS, type SearchSortOption } from '../types'
 
-const useDiscogsSearch = (query: string) => {
+const useDiscogsSearch = (query: string, sortBy: SearchSortOption = 'relevance') => {
   const {
     data,
     isPending,
@@ -15,8 +16,9 @@ const useDiscogsSearch = (query: string) => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ['discogs-search', query],
-    queryFn: ({ pageParam }) => searchAlbums(query, pageParam),
+    queryKey: ['discogs-search', query, sortBy],
+    queryFn: ({ pageParam }) =>
+      searchAlbums(query, pageParam, 20, SEARCH_SORT_PARAMS[sortBy]),
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.pagination.page < lastPage.pagination.pages
