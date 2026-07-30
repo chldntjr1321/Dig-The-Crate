@@ -29,7 +29,10 @@ const AlbumDetailModal = ({
   footer,
 }: AlbumDetailModalProps) => {
   const [isAnimating, setIsAnimating] = useState(false)
-  const { colors } = useAlbumColor(coverUrl)
+  const { colors, isLoading: isColorLoading } = useAlbumColor(coverUrl)
+  // 트랙리스트와 색상 추출이 서로 독립적으로 끝나 화면에 시차를 두고 나타나는 것을 막기 위해
+  // 두 로딩 상태를 하나로 묶어서 "같이 준비됐을 때만 같이 보여주는" 기준으로 사용
+  const isContentReady = !isTracklistLoading && !isColorLoading
 
   // 추출된 대표색(최대 2개)을 mutedColor로 톤 다운(채도↓, 밝기 상한)한 뒤
   // 기존 배경(#1C1208, bg-search-primary와 동일)으로 이어지는 그라데이션.
@@ -76,12 +79,13 @@ const AlbumDetailModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* 대표색 그라데이션 레이어 — 기본 배경(bg-search-primary) 위에 겹쳐두고,
-            색상 추출이 끝나면 opacity로 서서히 페이드인 (배경이 갑자기 바뀌는 느낌 방지) */}
+            트랙리스트/색상 추출이 모두 끝나면(isContentReady) opacity로 서서히 페이드인
+            (배경이 갑자기 바뀌는 느낌 방지 + 트랙리스트와 동시에 나타나도록 타이밍 동기화) */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background: gradientBackground,
-            opacity: colors ? 1 : 0,
+            opacity: isContentReady ? 1 : 0,
             transition: 'opacity 0.6s ease',
           }}
         />
@@ -112,8 +116,11 @@ const AlbumDetailModal = ({
 
           <div className="mx-6 mt-4 border-t border-border" />
 
-          <div className="overflow-y-auto max-h-64 px-6 py-2">
-            <TrackList tracklist={tracklist} isLoading={isTracklistLoading} />
+          {/* h-[216px]: 트랙 한 줄(py-2.5 + text-sm 기준 약 40px) x 5줄 + 컨테이너 padding(py-2, 16px).
+              5줄까지는 스켈레톤/실제 트랙리스트 높이가 항상 동일해 전환 시 모달이 늘었다 줄었다 하지 않고,
+              6곡 이상이면 지금처럼 overflow-y-auto로 스크롤 */}
+          <div className="overflow-y-auto h-[216px] px-6 py-2">
+            <TrackList tracklist={tracklist} isLoading={!isContentReady} />
           </div>
 
           {footer}

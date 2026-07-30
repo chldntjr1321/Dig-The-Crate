@@ -1,5 +1,5 @@
 import { parseDiscogsTitle } from '../utils/parseDiscogsTitle'
-import type { SearchAlbumsResult, SearchResult, Track } from '../types'
+import type { SearchAlbumsResult, SearchResult, SearchSortParams, Track } from '../types'
 
 const BASE_URL = 'https://api.discogs.com'
 
@@ -82,12 +82,15 @@ export const searchAlbums = async (
   query: string,
   page = 1,
   perPage = 20,
+  sortParams: SearchSortParams = {},
 ): Promise<SearchAlbumsResult> => {
   const data = await request<DiscogsSearchResponse>('/database/search', {
     q: query,
     type: 'release', // artist, label 등 다른 타입 제외하고 실제 발매반(release)만 검색
     per_page: perPage,
     page,
+    // sort/sort_order는 Discogs 공식 문서에 없는 비공식 파라미터 (docs/API_GUIDE.md 참조)
+    ...('sort' in sortParams ? { sort: sortParams.sort, sort_order: sortParams.sortOrder } : {}),
   })
   return {
     results: data.results.map(mapToSearchResult),

@@ -19,7 +19,9 @@ export function sortItems(
         return a.artist_name.localeCompare(b.artist_name)
       case 'album_name':
         return a.album_name.localeCompare(b.album_name)
-      case 'release_year':
+      case 'release_year_desc':
+        return (b.year ?? '').localeCompare(a.year ?? '')
+      case 'release_year_asc':
         return (a.year ?? '').localeCompare(b.year ?? '')
       default:
         return 0
