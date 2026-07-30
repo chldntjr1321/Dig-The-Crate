@@ -1,4 +1,9 @@
 import type { Track } from '@/types'
+import SkeletonBox from '@/components/ui/SkeletonBox'
+import cn from '@/utils/cn'
+
+// 실제 트랙 제목처럼 길이가 들쭉날쭉해 보이도록 폭을 다르게 순환
+const SKELETON_WIDTHS = ['w-48', 'w-32', 'w-40', 'w-52', 'w-36']
 
 interface TrackListProps {
   tracklist: Track[]
@@ -7,7 +12,15 @@ interface TrackListProps {
 
 const TrackList = ({ tracklist, isLoading }: TrackListProps) => {
   if (isLoading) {
-    return <p className="text-muted text-sm text-center py-4">불러오는 중...</p>
+    return (
+      <>
+        {SKELETON_WIDTHS.map((width, i) => (
+          <div key={i} className="py-2.5">
+            <SkeletonBox className={cn('h-3.5 rounded-sm', width)} />
+          </div>
+        ))}
+      </>
+    )
   }
 
   if (tracklist.length === 0) {
