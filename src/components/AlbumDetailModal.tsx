@@ -29,7 +29,10 @@ const AlbumDetailModal = ({
   footer,
 }: AlbumDetailModalProps) => {
   const [isAnimating, setIsAnimating] = useState(false)
-  const { colors } = useAlbumColor(coverUrl)
+  const { colors, isLoading: isColorLoading } = useAlbumColor(coverUrl)
+  // 트랙리스트와 색상 추출이 서로 독립적으로 끝나 화면에 시차를 두고 나타나는 것을 막기 위해
+  // 두 로딩 상태를 하나로 묶어서 "같이 준비됐을 때만 같이 보여주는" 기준으로 사용
+  const isContentReady = !isTracklistLoading && !isColorLoading
 
   // 추출된 대표색(최대 2개)을 mutedColor로 톤 다운(채도↓, 밝기 상한)한 뒤
   // 기존 배경(#1C1208, bg-search-primary와 동일)으로 이어지는 그라데이션.
