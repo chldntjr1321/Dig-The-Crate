@@ -1,10 +1,16 @@
-export type CollectionSortOption = 'recently_added' | 'artist_name' | 'album_name' | 'release_year'
+export type CollectionSortOption =
+  | 'recently_added'
+  | 'artist_name'
+  | 'album_name'
+  | 'release_year_desc'
+  | 'release_year_asc'
 
 export const SORT_LABELS: Record<CollectionSortOption, string> = {
   recently_added: '최근 추가순',
   artist_name: '아티스트명순',
   album_name: '앨범명순',
-  release_year: '발매 연도순',
+  release_year_desc: '발매 최신순',
+  release_year_asc: '발매 오래된순',
 }
 
 // Discogs 검색 API는 텍스트 필드(아티스트명/앨범명) 정렬을 지원하지 않아
