@@ -67,6 +67,7 @@ export const resetGuestCollection = async (userId: string): Promise<void> => {
     year: album.year,
     genres: album.genres,
     tracklist: album.tracklist,
+    itunes_collection_id: album.itunes_collection_id,
   }))
 
   const { error: insertError } = await supabase.from('collections').insert(rows)
