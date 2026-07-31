@@ -22,6 +22,7 @@ CREATE TABLE collections (
   year       TEXT,
   genres     TEXT[],
   tracklist  JSONB,
+  itunes_collection_id TEXT,
   added_at   TIMESTAMPTZ DEFAULT NOW() NOT NULL,
 
   UNIQUE (user_id, discogs_id)
@@ -41,7 +42,10 @@ CREATE TABLE collections (
 | `year`        | TEXT        | 발매 연도 (없을 수 있음)            |
 | `genres`      | TEXT[]      | 장르 배열 (예: ["Jazz", "Soul"])    |
 | `tracklist`   | JSONB       | 수록곡 목록 (Phase 2 LP 뒷면용)     |
+| `itunes_collection_id` | TEXT | iTunes 앨범 collectionId (전곡 재생용, 매칭 실패 시 `null`) |
 | `added_at`    | TIMESTAMPTZ | 컬렉션 추가 시각                    |
+
+> `itunes_collection_id`는 `ALTER TABLE ... ADD COLUMN`으로 추가된 컬럼이라, 이 변경 이전에 추가된 기존 행은 전부 `null`로 채워진다. 별도 백필 없이는 기존 컬렉션의 전곡 재생이 매칭 실패로 처리된다.
 
 ### UNIQUE 제약
 
