@@ -25,6 +25,7 @@ const useAddCollection = (onError: (message: string) => void) => {
         year: album.year,
         genres: album.genres,
         tracklist: album.tracklist,
+        itunes_collection_id: null,
         added_at: new Date().toISOString(),
       }
 

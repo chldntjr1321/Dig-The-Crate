@@ -227,6 +227,42 @@ interface ItunesTrack {
 
 ---
 
+### 앨범 전곡 조회 (Lookup API)
+
+트랙 단위 텍스트 검색(`entity=musicTrack`)은 검색어가 모호하면 전혀 다른 아티스트/앨범의 곡이 1등으로 매칭될 수 있다 (예: `"한요한 범퍼카"` 검색 시 무관한 아티스트의 곡이 반환됨). 이를 피하기 위해 앨범 전곡 재생은 텍스트 검색 대신 **collectionId 기반 Lookup**을 사용한다.
+
+**저장 시점** — 컬렉션에 앨범을 추가할 때 `entity=album` 검색으로 `collectionId`를 1회 확보해 `collections.itunes_collection_id`에 저장한다 (`services/itunes.ts`의 `findCollectionId`). 매칭 실패 시 `null`을 저장하고, 이후 재생 버튼을 비활성화한다.
+
+**재생 시점** — 저장된 `itunes_collection_id`로 Lookup API를 호출해 그 앨범에 속한 트랙만 정확히 조회한다 (`services/itunes.ts`의 `getAlbumTracks`).
+
+```
+GET /lookup?id={collectionId}&entity=song
+```
+
+**응답 구조**
+
+```typescript
+interface ItunesLookupResponse {
+  resultCount: number;
+  results: ItunesLookupResult[]; // 첫 번째 원소는 앨범 자체(wrapperType: "collection"), 이후 트랙들(wrapperType: "track")
+}
+
+interface ItunesLookupResult {
+  wrapperType: string;
+  trackNumber?: number; // 트랙에만 존재
+  trackName?: string; // 트랙에만 존재
+  previewUrl: string | null;
+}
+```
+
+**주의사항**
+
+- `wrapperType === "track"`인 항목만 걸러서 사용한다.
+- `trackNumber` 오름차순으로 정렬해 재생 순서를 보장한다.
+- 텍스트 매칭이 아니라 ID 기반 조회라 오매칭 위험이 없다.
+
+---
+
 ## 에러 처리 공통 규칙
 
 | 상황                          | 처리 방법                            |
