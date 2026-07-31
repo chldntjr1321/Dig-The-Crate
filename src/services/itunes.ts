@@ -9,6 +9,44 @@ interface ItunesTrackSearchResponse {
   results: ItunesTrack[]
 }
 
+interface ItunesAlbum {
+  collectionId: number
+}
+
+interface ItunesAlbumSearchResponse {
+  resultCount: number
+  results: ItunesAlbum[]
+}
+
+// 앨범 전곡 재생(lookup) 기준점이 되는 collectionId 조회. 매칭 실패/네트워크 에러 시 null 반환
+export const findCollectionId = async (
+  artistName: string,
+  albumName: string,
+): Promise<string | null> => {
+  const url = new URL(`${BASE_URL}/search`)
+  url.searchParams.set('term', `${artistName} ${albumName}`)
+  url.searchParams.set('entity', 'album')
+  url.searchParams.set('limit', '1')
+
+  let response: Response
+  try {
+    response = await fetch(url.toString())
+  } catch {
+    return null
+  }
+
+  if (!response.ok) {
+    return null
+  }
+
+  const data = (await response.json()) as ItunesAlbumSearchResponse
+  if (data.resultCount === 0) {
+    return null
+  }
+
+  return String(data.results[0].collectionId)
+}
+
 // 매칭 실패/네트워크 에러 모두 null 반환 → 호출부에서 재생 버튼 비활성화 처리 (docs/API_GUIDE.md 참조)
 export const getPreviewUrl = async (
   artistName: string,
