@@ -1,11 +1,16 @@
 import type { SearchResult } from '../types'
 
+// itunes_collection_id는 findCollectionId(아티스트명+앨범명)로 1회 조회해 검증 후 하드코딩한 값.
+// 매번 리셋할 때마다 iTunes API를 호출하지 않기 위해 정적 데이터에 직접 포함시켰다.
+type GuestAlbum = SearchResult & { itunes_collection_id: string }
+
 // 게스트 계정 로그아웃 시 컬렉션을 이 초기 상태로 리셋한다.
-export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
+export const GUEST_INITIAL_COLLECTION: GuestAlbum[] = [
   {
     discogs_id: '15176873',
     album_name: '전설',
     artist_name: '잔나비',
+    itunes_collection_id: '1456102975',
     cover_url:
       'https://i.discogs.com/nMIZu2Oig1DwzVudpen23Iu5aEs4az6I7wafh_3Wy3c/rs:fit/g:sm/q:90/h:598/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE1MTc2/ODczLTE2MTEwNjc5/ODEtNjI0Ni5qcGVn.jpeg',
     year: '2020',
@@ -29,6 +34,7 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
     discogs_id: '15993459',
     album_name: 'Monkey Hotel',
     artist_name: '잔나비',
+    itunes_collection_id: '1140706507',
     cover_url:
       'https://i.discogs.com/Stf5Ffh_MzENbAm1uTsExQruvJ5aTHo91bIK8zNV_LI/rs:fit/g:sm/q:90/h:488/w:488/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE1OTkz/NDU5LTE2MDUxNzM4/MTgtNzc1Ni5qcGVn.jpeg',
     year: '2016',
@@ -50,6 +56,7 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
     discogs_id: '17638198',
     album_name: '소곡집 I',
     artist_name: '잔나비',
+    itunes_collection_id: '1539127949',
     cover_url:
       'https://i.discogs.com/OUpk4AIGYML6RBf-Mr7RI0TUqXB-Ge1KduBX11kl1nA/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTE3NjM4/MTk4LTE2MTQ1ODc2/MjktMTcxOS5qcGVn.jpeg',
     year: '2021',
@@ -67,6 +74,7 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
     discogs_id: '21237181',
     album_name: '환상의 나라 (The Land Of Fantasy)',
     artist_name: '잔나비',
+    itunes_collection_id: '1578636382',
     cover_url:
       'https://i.discogs.com/D_6_LxJzlVKK0RWTBXI5sFgzIFof2TELpqWarNNEle8/rs:fit/g:sm/q:90/h:604/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIxMjM3/MTgxLTE2Mzg3MDk0/MDEtMjczOC5wbmc.jpeg',
     year: '2021',
@@ -91,6 +99,7 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
     discogs_id: '21303211',
     album_name: 'Next Episode',
     artist_name: 'AKMU*',
+    itunes_collection_id: '1577524102',
     cover_url:
       'https://i.discogs.com/CSIFOmx6TpSy1puZh-E4nlm8vYbTqOVJtl0LA6vbjno/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIxMzAz/MjExLTE3NzQ5MjA2/NTctNDU2Ny5wbmc.jpeg',
     year: '2022',
@@ -108,7 +117,8 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
   {
     discogs_id: '23425748',
     album_name: 'PSY 9th / 싸다9',
-    artist_name: 'Psy (7)',
+    artist_name: 'Psy',
+    itunes_collection_id: '1698053098',
     cover_url:
       'https://i.discogs.com/Ubo_yJ2mXAgqFFnTcb2Hv6h_DbxfIfCZ6q8_F3BJ9dM/rs:fit/g:sm/q:90/h:602/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIzNDI1/NzQ4LTE2NTcyMTMy/NjYtMTc1Mi5qcGVn.jpeg',
     year: '2022',
@@ -132,6 +142,7 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
     discogs_id: '26759546',
     album_name: '소곡집 II : 초록을거머쥔우리는',
     artist_name: '잔나비',
+    itunes_collection_id: '1622756309',
     cover_url:
       'https://i.discogs.com/24mXdQ-Sk5IONzuNmTMo9LIXAK-0VR8XEVb8NGG6dfw/rs:fit/g:sm/q:90/h:237/w:236/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTI2NzU5/NTQ2LTE2ODE0ODkx/NTEtOTMwOC5wbmc.jpeg',
     year: '2023',
@@ -148,6 +159,7 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
     discogs_id: '33970398',
     album_name: '사운드 오브 뮤직 pt.1',
     artist_name: '잔나비',
+    itunes_collection_id: '1810135874',
     cover_url:
       'https://i.discogs.com/WZgL9em77_AgruPYCb2K6_o4jZpNDaTgmkdCz1VH-jU/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMzOTcw/Mzk4LTE3NDcxNTk5/MjEtNDgyMS5qcGVn.jpeg',
     year: '2025',
@@ -166,7 +178,8 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
   {
     discogs_id: '34886606',
     album_name: 'Ruby',
-    artist_name: 'Jennie (8)',
+    artist_name: 'Jennie',
+    itunes_collection_id: '1800280826',
     cover_url:
       'https://i.discogs.com/BKtvaa11iI_iJnjJgoTqszbRr0mzWqmipqAiYM4MzZ4/rs:fit/g:sm/q:90/h:601/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTM0ODg2/NjA2LTE3NTU4NDEy/MzMtNjc0Ni5qcGVn.jpeg',
     year: '2025',
@@ -193,6 +206,7 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
     discogs_id: '35648713',
     album_name: '사운드 오브 뮤직 pt.2 : Life',
     artist_name: '잔나비',
+    itunes_collection_id: '1847217070',
     cover_url:
       'https://i.discogs.com/9Q2REm4FMsoRNwtphMbZ8ggxTdaXpV6g2rDpAv68ATA/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTM1NjQ4/NzEzLTE3NjMwMDc1/MTAtNTk4OC5qcGVn.jpeg',
     year: '2025',
@@ -220,6 +234,7 @@ export const GUEST_INITIAL_COLLECTION: SearchResult[] = [
     discogs_id: '668094',
     album_name: 'Lemon Tree',
     artist_name: "Fool's Garden",
+    itunes_collection_id: '1642721872',
     cover_url:
       'https://i.discogs.com/Pc2iK3hTHJuDslsSvVCNJrfQdS3uLVWnzXrgfuNgxO8/rs:fit/g:sm/q:90/h:597/w:592/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTY2ODA5/NC0xNTg1ODQ0MjU1/LTg3OTYucG5n.jpeg',
     year: '1996',

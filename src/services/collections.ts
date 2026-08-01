@@ -1,5 +1,6 @@
 import supabase from '../lib/supabase'
 import { getReleaseDetail } from './discogs'
+import { findCollectionId } from './itunes'
 import { GUEST_INITIAL_COLLECTION } from './guestInitialCollection'
 import type { Collection, SearchResult } from '../types'
 
@@ -27,6 +28,7 @@ export const addCollection = async (
   album: SearchResult,
 ): Promise<Collection> => {
   const tracklist = await getReleaseDetail(album.discogs_id)
+  const itunesCollectionId = await findCollectionId(album.artist_name, album.album_name)
 
   const { data, error } = await supabase
     .from('collections')
@@ -39,6 +41,7 @@ export const addCollection = async (
       year: album.year,
       genres: album.genres,
       tracklist,
+      itunes_collection_id: itunesCollectionId,
     })
     .select()
     .single()
@@ -64,6 +67,7 @@ export const resetGuestCollection = async (userId: string): Promise<void> => {
     year: album.year,
     genres: album.genres,
     tracklist: album.tracklist,
+    itunes_collection_id: album.itunes_collection_id,
   }))
 
   const { error: insertError } = await supabase.from('collections').insert(rows)

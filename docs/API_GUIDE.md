@@ -160,7 +160,7 @@ Rate Limit 명시적 제한 없음 (과도한 호출 자제)
 
 ---
 
-### 앨범 미리듣기 URL 조회
+### 앨범 검색 (collectionId 조회)
 
 ```
 GET /search
@@ -198,32 +198,44 @@ interface ItunesAlbum {
 ```
 
 > iTunes 앨범 검색은 `previewUrl`을 직접 반환하지 않는다.
-> 미리듣기 URL은 트랙 단위 검색에서 가져온다.
+> 미리듣기 URL은 트랙 전체를 조회하는 Lookup API에서 가져온다 (아래 참조).
+> 트랙 단위 텍스트 검색(`entity=musicTrack`)은 더 이상 쓰지 않는다 — 오매칭 위험 때문에 Lookup 방식으로 대체했다.
 
 ---
 
-### 트랙 미리듣기 URL 조회
+### 앨범 전곡 조회 (Lookup API)
+
+트랙 단위 텍스트 검색(`entity=musicTrack`)은 검색어가 모호하면 전혀 다른 아티스트/앨범의 곡이 1등으로 매칭될 수 있다 (예: `"한요한 범퍼카"` 검색 시 무관한 아티스트의 곡이 반환됨). 이를 피하기 위해 앨범 전곡 재생은 텍스트 검색 대신 **collectionId 기반 Lookup**을 사용한다.
+
+**저장 시점** — 컬렉션에 앨범을 추가할 때 `entity=album` 검색으로 `collectionId`를 1회 확보해 `collections.itunes_collection_id`에 저장한다 (`services/itunes.ts`의 `findCollectionId`). 매칭 실패 시 `null`을 저장하고, 이후 재생 버튼을 비활성화한다.
+
+**재생 시점** — 저장된 `itunes_collection_id`로 Lookup API를 호출해 그 앨범에 속한 트랙만 정확히 조회한다 (`services/itunes.ts`의 `getAlbumTracks`).
 
 ```
-GET /search?term={artist}+{album}&entity=musicTrack&limit=1
+GET /lookup?id={collectionId}&entity=song
 ```
 
-**응답에서 미리듣기 URL 추출**
+**응답 구조**
 
 ```typescript
-interface ItunesTrack {
-  trackName: string;
-  artistName: string;
-  collectionName: string;
-  previewUrl: string | null; // 30초 미리듣기 MP3 URL (없을 수 있음)
-  artworkUrl100: string;
+interface ItunesLookupResponse {
+  resultCount: number;
+  results: ItunesLookupResult[]; // 첫 번째 원소는 앨범 자체(wrapperType: "collection"), 이후 트랙들(wrapperType: "track")
+}
+
+interface ItunesLookupResult {
+  wrapperType: string;
+  trackNumber?: number; // 트랙에만 존재
+  trackName?: string; // 트랙에만 존재
+  previewUrl: string | null;
 }
 ```
 
 **주의사항**
 
-- `previewUrl`이 `null`인 경우가 있다. 반드시 null 체크 후 사용한다.
-- 매칭 실패 시 (`resultCount === 0`) 미리듣기 버튼을 비활성화한다.
+- `wrapperType === "track"`인 항목만 걸러서 사용한다.
+- `trackNumber` 오름차순으로 정렬해 재생 순서를 보장한다.
+- 텍스트 매칭이 아니라 ID 기반 조회라 오매칭 위험이 없다.
 
 ---
 

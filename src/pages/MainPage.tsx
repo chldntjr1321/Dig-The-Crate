@@ -31,7 +31,7 @@ const MainPage = () => {
   }, [collections])
 
   // 스크롤이 바닥에서 이 값(px) 이내로 남으면 미니 플레이어를 숨김
-  const BOTTOM_THRESHOLD_PX = 5
+  const BOTTOM_THRESHOLD_PX = 20
 
   useEffect(() => {
     const main = mainRef.current
@@ -50,6 +50,10 @@ const MainPage = () => {
   return (
     <div className="bg-page relative flex flex-col h-screen">
       <Header />
+
+      {/* fixed 포지션이라 화면상 위치는 그대로지만, Tab 순서상 앨범 카드들보다 먼저
+          오도록 DOM 순서를 앞당김 (앨범 수와 무관하게 미니 플레이어에 빠르게 도달 가능) */}
+      <MusicPlayer hiddenByScroll={isNearBottom} />
 
       <main ref={mainRef} className="flex-1 overflow-y-auto [scrollbar-gutter:stable] relative">
         {isLoading && !showSkeleton ? null : collections.length === 0 && !isLoading ? (
@@ -98,8 +102,6 @@ const MainPage = () => {
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
-
-      <MusicPlayer hiddenByScroll={isNearBottom} />
     </div>
   )
 }

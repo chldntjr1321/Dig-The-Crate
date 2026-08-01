@@ -1,8 +1,9 @@
-import { useState, useEffect, type ReactNode } from 'react'
+import { useState, useEffect, useRef, type ReactNode } from 'react'
 import type { Track } from '@/types'
 import CloseIcon from '@/components/ui/CloseIcon'
 import TrackList from '@/components/ui/TrackList'
 import useAlbumColor from '@/hooks/useAlbumColor'
+import useFocusTrap from '@/hooks/useFocusTrap'
 import { mutedColor } from '@/utils/mutedColor'
 
 const MODAL_WIDTH = 480
@@ -29,6 +30,7 @@ const AlbumDetailModal = ({
   footer,
 }: AlbumDetailModalProps) => {
   const [isAnimating, setIsAnimating] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
   const { colors, isLoading: isColorLoading } = useAlbumColor(coverUrl)
   // 트랙리스트와 색상 추출이 서로 독립적으로 끝나 화면에 시차를 두고 나타나는 것을 막기 위해
   // 두 로딩 상태를 하나로 묶어서 "같이 준비됐을 때만 같이 보여주는" 기준으로 사용
@@ -55,6 +57,8 @@ const AlbumDetailModal = ({
     setTimeout(onClose, 400)
   }
 
+  useFocusTrap(panelRef, handleClose)
+
   const getInitialTransform = () => {
     const dx = triggerRect.left + triggerRect.width / 2 - window.innerWidth / 2
     const dy = triggerRect.top + triggerRect.height / 2 - window.innerHeight / 2
@@ -69,6 +73,8 @@ const AlbumDetailModal = ({
       onClick={handleClose}
     >
       <div
+        ref={panelRef}
+        tabIndex={-1}
         className="relative rounded-lg overflow-hidden flex flex-col bg-search-primary"
         style={{
           width: MODAL_WIDTH,

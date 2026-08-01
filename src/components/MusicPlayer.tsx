@@ -69,7 +69,7 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
     return null
   }
 
-  const { coverUrl, albumName } = currentAlbum
+  const { coverUrl, albumName, trackName } = currentAlbum
 
   const handleClose = () => {
     setIsClosing(true)
@@ -147,9 +147,9 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
           ) : (
             <div className="overflow-hidden whitespace-nowrap">
               <div className="marquee-track flex w-max">
-                <p className="text-primary text-[12px] font-medium pr-8">{albumName}</p>
+                <p className="text-primary text-[12px] font-medium pr-8">{trackName}</p>
                 <p className="text-primary text-[12px] font-medium pr-8" aria-hidden="true">
-                  {albumName}
+                  {trackName}
                 </p>
               </div>
             </div>
