@@ -117,7 +117,7 @@ export const GUEST_INITIAL_COLLECTION: GuestAlbum[] = [
   {
     discogs_id: '23425748',
     album_name: 'PSY 9th / 싸다9',
-    artist_name: 'Psy (7)',
+    artist_name: 'Psy',
     itunes_collection_id: '1698053098',
     cover_url:
       'https://i.discogs.com/Ubo_yJ2mXAgqFFnTcb2Hv6h_DbxfIfCZ6q8_F3BJ9dM/rs:fit/g:sm/q:90/h:602/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTIzNDI1/NzQ4LTE2NTcyMTMy/NjYtMTc1Mi5qcGVn.jpeg',
@@ -178,7 +178,7 @@ export const GUEST_INITIAL_COLLECTION: GuestAlbum[] = [
   {
     discogs_id: '34886606',
     album_name: 'Ruby',
-    artist_name: 'Jennie (8)',
+    artist_name: 'Jennie',
     itunes_collection_id: '1800280826',
     cover_url:
       'https://i.discogs.com/BKtvaa11iI_iJnjJgoTqszbRr0mzWqmipqAiYM4MzZ4/rs:fit/g:sm/q:90/h:601/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTM0ODg2/NjA2LTE3NTU4NDEy/MzMtNjc0Ni5qcGVn.jpeg',
