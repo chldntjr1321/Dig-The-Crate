@@ -5,6 +5,7 @@ interface AlbumCardOverlayProps {
   artistName: string
   albumName: string
   isDeletePending: boolean
+  isPlayDisabled: boolean
   onDeleteClick: () => void
   onPlayClick: () => void
 }
@@ -13,6 +14,7 @@ const AlbumCardOverlay = ({
   artistName,
   albumName,
   isDeletePending,
+  isPlayDisabled,
   onDeleteClick,
   onPlayClick,
 }: AlbumCardOverlayProps) => {
@@ -45,7 +47,12 @@ const AlbumCardOverlay = ({
 
       <div className="flex items-end justify-between gap-2">
         <AlbumInfo artistName={artistName} albumName={albumName} />
-        <MusicPlayButton ariaLabel="미리듣기 재생" onClick={onPlayClick} />
+        <MusicPlayButton
+          ariaLabel="미리듣기 재생"
+          onClick={onPlayClick}
+          disabled={isPlayDisabled}
+          title={isPlayDisabled ? '이 앨범은 미리듣기를 제공하지 않습니다.' : undefined}
+        />
       </div>
     </div>
   )

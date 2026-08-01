@@ -76,6 +76,7 @@ export interface Collection {
   year?: string
   genres?: string[]
   tracklist?: Track[]
+  itunes_collection_id: string | null
   added_at: string
 }
 

@@ -5,6 +5,7 @@ export interface PlayingAlbum {
   coverUrl: string
   albumName: string
   artistName: string
+  trackName: string | null
   previewUrl: string | null
   isPreviewLoading: boolean
 }

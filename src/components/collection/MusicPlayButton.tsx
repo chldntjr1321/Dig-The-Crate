@@ -4,6 +4,7 @@ interface MusicPlayButtonProps {
   onClick?: () => void
   disabled?: boolean
   isPlaying?: boolean
+  title?: string
 }
 
 const SIZE_MAP: Record<'sm' | 'md', { button: string; icon: number }> = {
@@ -17,6 +18,7 @@ const MusicPlayButton = ({
   onClick,
   disabled = false,
   isPlaying = false,
+  title,
 }: MusicPlayButtonProps) => {
   const { button, icon } = SIZE_MAP[size]
 
@@ -24,6 +26,7 @@ const MusicPlayButton = ({
     <button
       onClick={onClick}
       disabled={disabled}
+      title={title}
       className={`pointer-events-auto shrink-0 ${button} rounded-full bg-accent hover:brightness-75 flex items-center justify-center cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:brightness-100`}
       aria-label={ariaLabel}
     >
