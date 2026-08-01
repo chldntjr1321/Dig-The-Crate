@@ -38,7 +38,12 @@ const AlbumCard = ({ albums, index, onError }: AlbumCardProps) => {
     setCardRect(null)
   }
 
+  const isPlayDisabled = album.itunes_collection_id === null
+
   const handlePlayClick = () => {
+    if (isPlayDisabled) {
+      return
+    }
     playQueue(albums, index)
   }
 
@@ -64,6 +69,7 @@ const AlbumCard = ({ albums, index, onError }: AlbumCardProps) => {
           artistName={album.artist_name}
           albumName={album.album_name}
           isDeletePending={isPending}
+          isPlayDisabled={isPlayDisabled}
           onDeleteClick={() => setIsDeleteModalOpen(true)}
           onPlayClick={handlePlayClick}
         />
