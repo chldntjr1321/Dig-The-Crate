@@ -31,7 +31,7 @@ const MainPage = () => {
   }, [collections])
 
   // 스크롤이 바닥에서 이 값(px) 이내로 남으면 미니 플레이어를 숨김
-  const BOTTOM_THRESHOLD_PX = 5
+  const BOTTOM_THRESHOLD_PX = 20
 
   useEffect(() => {
     const main = mainRef.current
