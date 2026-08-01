@@ -19,7 +19,7 @@ const AlbumCardOverlay = ({
   onPlayClick,
 }: AlbumCardOverlayProps) => {
   return (
-    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 pointer-events-none">
+    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 pointer-events-none">
       <div className="flex justify-end">
         <button
           onClick={onDeleteClick}
