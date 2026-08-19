@@ -2,14 +2,13 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider } from 'react-router'
 import queryClient from './lib/queryClient'
 import router from './router'
-import { PlayerProvider } from './components/PlayerProvider'
+import PlayerPlayabilityCheck from './components/PlayerPlayabilityCheck'
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <PlayerProvider>
-        <RouterProvider router={router} />
-      </PlayerProvider>
+      <PlayerPlayabilityCheck />
+      <RouterProvider router={router} />
     </QueryClientProvider>
   )
 }

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import type { Collection } from '../../types'
 import useDeleteCollection from '../../hooks/useDeleteCollection'
-import { usePlayer } from '../../hooks/usePlayer'
+import usePlayerStore from '../../stores/usePlayerStore'
 import DeleteConfirmModal from './DeleteConfirmModal'
 import AlbumCardOverlay from './AlbumCardOverlay'
 import AlbumDetailModal from '../AlbumDetailModal'
@@ -19,7 +19,7 @@ const AlbumCard = ({ albums, index, onError }: AlbumCardProps) => {
   const [cardRect, setCardRect] = useState<DOMRect | null>(null)
   const coverButtonRef = useRef<HTMLButtonElement>(null)
   const { deleteCollection, isPending } = useDeleteCollection(onError)
-  const { playQueue } = usePlayer()
+  const playQueue = usePlayerStore((state) => state.playQueue)
 
   const handleConfirm = () => {
     deleteCollection(album.id)

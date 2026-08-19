@@ -3,26 +3,58 @@ import MusicPlayButton from './collection/MusicPlayButton'
 import CloseIcon from './ui/CloseIcon'
 import SkeletonBox from './ui/SkeletonBox'
 import Toast from './ui/Toast'
-import { usePlayer } from '../hooks/usePlayer'
+import usePlayerStore from '../stores/usePlayerStore'
+import useAlbumTracks from '../hooks/useAlbumTracks'
 
 interface MusicPlayerProps {
   hiddenByScroll?: boolean
+}
+
+interface PlayingAlbum {
+  coverUrl: string
+  albumName: string
+  artistName: string
+  trackName: string | null
+  previewUrl: string | null
+  isPreviewLoading: boolean
 }
 
 // 이 값(초) 이내에 "이전 곡" 버튼을 누르면 실제 이전 앨범으로 이동, 그 외엔 현재 곡을 처음으로 되돌림
 const PREV_TRACK_THRESHOLD_SECONDS = 1
 
 const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
-  const {
-    currentAlbum,
-    closePlayer,
-    isPlaying,
-    togglePlay,
-    playbackError,
-    clearPlaybackError,
-    next,
-    prev,
-  } = usePlayer()
+  const queue = usePlayerStore((state) => state.queue)
+  const currentAlbumId = usePlayerStore((state) => state.currentAlbumId)
+  const currentTrackIndex = usePlayerStore((state) => state.currentTrackIndex)
+  const isPlaying = usePlayerStore((state) => state.isPlaying)
+  const playbackError = usePlayerStore((state) => state.playbackError)
+  const togglePlay = usePlayerStore((state) => state.togglePlay)
+  const closePlayer = usePlayerStore((state) => state.closePlayer)
+  const clearPlaybackError = usePlayerStore((state) => state.clearPlaybackError)
+  const next = usePlayerStore((state) => state.next)
+  const prev = usePlayerStore((state) => state.prev)
+
+  const currentCollection = currentAlbumId ? (queue.find((c) => c.id === currentAlbumId) ?? null) : null
+
+  // AlbumCard의 재생 버튼 클릭 시 이미 같은 itunes_collection_id로 useAlbumTracks가 호출되지만,
+  // TanStack Query가 queryKey 기준으로 캐시를 공유하므로 여기서 다시 호출해도 중복 네트워크 요청은 없음
+  const { tracks, isLoading: isTracksLoading } = useAlbumTracks(
+    currentCollection?.itunes_collection_id ?? null,
+    currentCollection !== null,
+  )
+  const currentTrack = tracks[currentTrackIndex] ?? null
+
+  const currentAlbum: PlayingAlbum | null = currentCollection
+    ? {
+        coverUrl: currentCollection.cover_url,
+        albumName: currentCollection.album_name,
+        artistName: currentCollection.artist_name,
+        trackName: currentTrack?.trackName ?? null,
+        previewUrl: currentTrack?.previewUrl ?? null,
+        isPreviewLoading: isTracksLoading,
+      }
+    : null
+
   const [isClosing, setIsClosing] = useState(false)
   const [trackedAlbum, setTrackedAlbum] = useState(currentAlbum)
   const [progress, setProgress] = useState(0)
@@ -93,7 +125,7 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
 
   // 재생이 끝나면 다음 앨범으로 자동 이동 (큐 끝이면 next()가 알아서 재생을 멈춤)
   const handleEnded = () => {
-    next()
+    next(tracks.length, isTracksLoading)
   }
 
   // 재생 위치가 임계값 이내면 실제 이전 앨범으로, 그 외엔 현재 곡을 처음으로 되돌림
@@ -103,7 +135,7 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
       return
     }
     if (audio.currentTime < PREV_TRACK_THRESHOLD_SECONDS) {
-      prev()
+      prev(isTracksLoading)
     } else {
       audio.currentTime = 0
     }
@@ -184,7 +216,7 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
         />
 
         <button
-          onClick={next}
+          onClick={() => next(tracks.length, isTracksLoading)}
           className="text-secondary hover:text-primary cursor-pointer"
           aria-label="다음 곡"
         >

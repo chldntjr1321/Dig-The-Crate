@@ -19,7 +19,6 @@ src/
 │   ├── useAddCollection.ts    # 미구현
 │   ├── useDeleteCollection.ts # 미구현
 │   ├── useDiscogsSearch.ts    # 미구현
-│   ├── usePlayer.ts           # PlayerContext 정의 + 훅 (Phase 2)
 │   └── useAlbumColor.ts       # 앨범 커버 대표색 추출 훅, 계산은 Worker에 위임 (Phase 2)
 ├── components/
 │   ├── ui/
@@ -32,7 +31,7 @@ src/
 │   ├── AlbumDetailModal.tsx       # 컬렉션/검색 공용 앨범 상세(트랙리스트) 모달
 │   ├── Header.tsx
 │   ├── MusicPlayer.tsx            # 좌하단 고정 미니 플레이어 (Phase 2)
-│   ├── PlayerProvider.tsx         # 재생 상태 전역 Context (Phase 2)
+│   ├── PlayerPlayabilityCheck.tsx # 트랙 재생 가능 여부 판별 (화면 없음, Phase 2)
 │   ├── ProtectedRoute.tsx
 │   ├── auth/
 │   │   ├── AuthInput.tsx
