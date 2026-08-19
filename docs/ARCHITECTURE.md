@@ -7,6 +7,8 @@ src/
 ├── lib/
 │   ├── supabase.ts        # Supabase 클라이언트 초기화
 │   └── queryClient.ts     # TanStack Query 전역 설정
+├── stores/
+│   └── usePlayerStore.ts  # 재생 상태 전역 스토어 (Zustand, Phase 2)
 ├── services/
 │   ├── discogs.ts         # Discogs API 호출 함수 (미구현)
 │   └── collections.ts     # Supabase collections CRUD 함수
@@ -111,9 +113,12 @@ const ProtectedRoute = () => {
 ```
 서버 상태 (API에서 가져오는 데이터)  → TanStack Query
 로컬 상태 (UI 상태, 입력값 등)       → useState
+전역 클라이언트 상태 (재생 상태 등)   → Zustand
 ```
 
-Phase 2에서 LP 플레이어 전역 상태가 필요해질 경우 Context 또는 Zustand 도입을 검토한다.
+재생 상태는 처음엔 Context로 구현했으나(#44), 구독 컴포넌트가 늘어나며 관련 없는 상태 변경에도
+리렌더링되는 문제가 생겨 Zustand로 전환했다(#78). Zustand 스토어는 React 렌더링 사이클과 무관하므로,
+TanStack Query 훅(`useAlbumTracks`) 호출과 그 결과에 따른 판단 로직은 여전히 컴포넌트(`PlayerPlayabilityCheck.tsx`)에 둔다.
 
 ---
 
