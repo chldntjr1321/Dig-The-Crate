@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type AnimationEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type AnimationEvent } from 'react'
 import MusicPlayButton from './collection/MusicPlayButton'
 import CloseIcon from './ui/CloseIcon'
 import SkeletonBox from './ui/SkeletonBox'
@@ -44,16 +44,23 @@ const MusicPlayer = ({ hiddenByScroll = false }: MusicPlayerProps) => {
   )
   const currentTrack = tracks[currentTrackIndex] ?? null
 
-  const currentAlbum: PlayingAlbum | null = currentCollection
-    ? {
-        coverUrl: currentCollection.cover_url,
-        albumName: currentCollection.album_name,
-        artistName: currentCollection.artist_name,
-        trackName: currentTrack?.trackName ?? null,
-        previewUrl: currentTrack?.previewUrl ?? null,
-        isPreviewLoading: isTracksLoading,
-      }
-    : null
+  // 진행바 갱신(handleTimeUpdate) 등 이 컴포넌트 자체의 잦은 리렌더링에서도 참조가 유지되도록 메모이제이션.
+  // 안 하면 매 렌더마다 새 객체가 되어 아래 trackedAlbum 비교(currentAlbum !== trackedAlbum)가 항상 참이 되고,
+  // setTrackedAlbum → 리렌더 → 새 객체 → ... 무한 리렌더로 이어진다.
+  const currentAlbum: PlayingAlbum | null = useMemo(
+    () =>
+      currentCollection
+        ? {
+            coverUrl: currentCollection.cover_url,
+            albumName: currentCollection.album_name,
+            artistName: currentCollection.artist_name,
+            trackName: currentTrack?.trackName ?? null,
+            previewUrl: currentTrack?.previewUrl ?? null,
+            isPreviewLoading: isTracksLoading,
+          }
+        : null,
+    [currentCollection, currentTrack, isTracksLoading],
+  )
 
   const [isClosing, setIsClosing] = useState(false)
   const [trackedAlbum, setTrackedAlbum] = useState(currentAlbum)
